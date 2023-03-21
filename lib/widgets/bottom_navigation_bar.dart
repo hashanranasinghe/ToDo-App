@@ -3,12 +3,11 @@ import 'package:todo_app/screens/Task/calendar_screen.dart';
 import 'package:todo_app/screens/Task/home_screen.dart';
 import 'package:todo_app/screens/focus/focus_screen.dart';
 import 'package:todo_app/screens/user/user_profile_screen.dart';
+import 'package:todo_app/services/validator/validate_handeler.dart';
 import 'package:todo_app/utils/constraints.dart';
 import 'package:todo_app/widgets/Task_priority_widget.dart';
 import 'package:todo_app/widgets/choose_category_widget.dart';
 import 'package:todo_app/widgets/text_field.dart';
-
-
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key});
@@ -30,6 +29,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   ];
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+  final _form = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -111,82 +111,95 @@ class _BottomNavBarState extends State<BottomNavBar> {
             right: 20,
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Add Task",
-                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20),
-                ),
-                TextFieldWidget(
-                  label: "Title",
-                  onchange: (value) {},
-                  valid: (value) {},
-                  save: (value) {},
-                  controller: titleController,
-                ),
-                TextFieldWidget(
-                  label: "Description",
-                  onchange: (value) {},
-                  valid: (value) {},
-                  save: (value) {},
-                  controller: descriptionController,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconButton(
-                          onPressed: () async {
-                            await _getCalendar();
-                          },
-                          icon: Icon(Icons.calendar_month_outlined),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            _getTime();
-                          },
-                          icon: Icon(Icons.timer_outlined),
-                        ),
-                        IconButton(
+          child: Form(
+            key: _form,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Add Task",
+                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20),
+                  ),
+                  TextFieldWidget(
+                    label: "Title",
+                    onchange: (value) {},
+                    valid: (value) {
+                      return Validator.generalValid(value!);
+                    },
+                    save: (value) {},
+                    controller: titleController,
+                  ),
+                  TextFieldWidget(
+                    label: "Description",
+                    onchange: (value) {
+
+                    },
+                    valid: (value) {
+                      return Validator.generalValid(value!);
+                    },
+                    save: (value) {},
+                    controller: descriptionController,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            onPressed: () async {
+                              await _getCalendar();
+                            },
+                            icon: Icon(Icons.calendar_month_outlined),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              _getTime();
+                            },
+                            icon: Icon(Icons.timer_outlined),
+                          ),
+                          IconButton(
+                              onPressed: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return ChooseCategoryWidget();
+                                    });
+                              },
+                              icon: Icon(Icons.category_outlined)),
+                          IconButton(
                             onPressed: () {
                               showDialog(
                                   context: context,
                                   builder: (BuildContext context) {
-                                    return ChooseCategoryWidget();
+                                    return TaskPriorityWidget();
                                   });
                             },
-                            icon: Icon(Icons.category_outlined)),
-                        IconButton(
-                          onPressed: () {
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return TaskPriorityWidget();
-                                });
-                          },
-                          icon: Icon(Icons.flag_outlined),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        IconButton(
-                          onPressed: () {},
-                          icon: Icon(
-                            Icons.send_outlined,
-                            color: kPrimaryButtonColor,
+                            icon: Icon(Icons.flag_outlined),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              if (_form.currentState!.validate()) {
+                                print("ok");
+                              }
+                            },
+                            icon: Icon(
+                              Icons.send_outlined,
+                              color: kPrimaryButtonColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -207,6 +220,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     setState(() {
       _selectedDate = newDate;
     });
+    print(_selectedDate);
   }
 
   _getTime() {
@@ -215,6 +229,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       setState(() {
         _timeOfDay = value!;
       });
+      print(_timeOfDay);
     });
   }
 }

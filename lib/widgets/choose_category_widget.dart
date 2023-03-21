@@ -59,27 +59,32 @@ class _ChooseCategoryWidgetState extends State<ChooseCategoryWidget> {
                 childAspectRatio: 1,
               ),
               itemBuilder: (BuildContext context, int index) {
-                return Column(
-                  children: [
-                    Container(
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              child: Icon(Icons.school_outlined),
-                              decoration: BoxDecoration(color: Colors.blue),
-                              padding: EdgeInsets.all(15),
-                            ),
-                          ],
+                return InkWell(
+                  onTap: (){
+                    print("uni");
+                  },
+                  child: Column(
+                    children: [
+                      Container(
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                child: Icon(Icons.school_outlined),
+                                decoration: BoxDecoration(color: Colors.blue),
+                                padding: EdgeInsets.all(15),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text("University")
-                  ],
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text("University")
+                    ],
+                  ),
                 );
               },
             ),
@@ -99,6 +104,5 @@ class _ChooseCategoryWidgetState extends State<ChooseCategoryWidget> {
         ],
       ),
     ));
-    ;
   }
 }
