@@ -19,14 +19,6 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   final _form = GlobalKey<FormState>();
-  bool isEmailVerify = false;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    isEmailVerify = FirebaseAuth.instance.currentUser!.emailVerified;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -117,19 +109,19 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   _signIn() async {
-    if (isEmailVerify) {
-      if (_form.currentState!.validate()) {
-        int r = await SignInManager()
-            .signIn(emailController.text, passwordController.text);
+    if (_form.currentState!.validate()) {
+      int r = await SignInManager()
+          .signIn(emailController.text, passwordController.text);
 
-        if (r == resOk) {
+      if (r == resOk) {
+        if (FirebaseAuth.instance.currentUser!.emailVerified) {
           openTodoList(context);
         } else {
-          Fluttertoast.showToast(msg: 'Wrong email or password');
+          Fluttertoast.showToast(msg: 'Please verify your email.');
         }
+      } else {
+        Fluttertoast.showToast(msg: 'Wrong email or password');
       }
-    } else {
-      Fluttertoast.showToast(msg: 'Please verify your email.');
     }
   }
 }

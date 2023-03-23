@@ -5,7 +5,7 @@ class TaskModel {
   String? id;
   String title;
   String description;
-  String priority;
+  int priority;
   CategoryModel category;
   DateTime date;
   TimeOfDay time;

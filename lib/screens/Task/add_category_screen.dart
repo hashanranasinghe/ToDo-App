@@ -103,7 +103,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                 ),
                 Text("Category color:"),
                 if (selectedColor == null) ...[
-                  Container(
+                  SizedBox(
                     height: 100, // Set a fixed height for the container
                     child: ListView.builder(
                       shrinkWrap: true,
@@ -115,7 +115,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                             setState(() {
                               selectedColor = colors[index];
                             });
-                            print('Selected color: $selectedColor');
+                            print('Selected color: ${Convert.getColorString(color: colors[index])}');
                           },
                           child: Container(
                             width: 40,
@@ -230,6 +230,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                         setState(() {
                           icon = icons[index];
                         });
+                        print(icon?.codePoint);
                         Navigator.pop(
                             context, icons[index]); // Return the selected icon
                       },

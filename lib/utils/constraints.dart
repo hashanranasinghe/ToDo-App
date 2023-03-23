@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 
 const logo = "assets/images/logo.png";
 
-
-//dont change black its effect to the calendar
+//don't change black its effect to the calendar
 ThemeData darkTheme = ThemeData.dark().copyWith(
-  primaryColor: Colors.white, colorScheme: ColorScheme(
+  primaryColor: Colors.white,
+  colorScheme: ColorScheme(
     background: Colors.white,
     brightness: Brightness.dark,
     primary: kPrimaryButtonColor,
@@ -32,17 +32,12 @@ const kPrimaryTextColor = Color(0xFFAFAFAF);
 
 const kPrimaryErrorColor = Color(0xFFFF4949);
 
-
-
-
-
-
 const List<IconData> icons = [
   Icons.access_alarm,
   Icons.accessibility,
   Icons.add,
   Icons.add_circle_outline,
-  Icons.arrow_forward,
+  Icons.school_outlined,
   Icons.assignment,
   Icons.attach_file,
   Icons.attach_money,
@@ -60,9 +55,6 @@ const List<IconData> icons = [
   Icons.color_lens,
 ];
 
-
-
-
 List<Color> colors = List.generate(20, (index) {
   return Color.fromARGB(
     255,
@@ -75,3 +67,17 @@ List<Color> colors = List.generate(20, (index) {
 const int resOk = 1;
 const int resFail = 0;
 const String successCode = "successful";
+
+class Convert {
+  static String getColorString({required Color color}) {
+    String colorString = color.toString();
+    RegExp regExp = RegExp(
+        r"0xff([a-fA-F0-9]+)"); // Matches "0xff" followed by any number of hexadecimal digits
+    RegExpMatch? match = regExp
+        .firstMatch(colorString); // Search for the pattern in the color string
+    String? hexValue =
+        match?.group(1); // Extract the hexadecimal value from the match
+    print(hexValue);
+    return hexValue.toString();
+  }
+}

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:todo_app/utils/constraints.dart';
 import 'package:todo_app/widgets/Task_priority_widget.dart';
 import 'package:todo_app/widgets/button_field.dart';
-import 'package:todo_app/widgets/choose_category_widget.dart';
 import 'package:todo_app/widgets/edit_task_dialog.dart';
 import 'package:todo_app/widgets/task_button.dart';
 import 'package:todo_app/widgets/task_delete_dialog.dart';
@@ -107,7 +106,7 @@ class _TaskScreenState extends State<TaskScreen> {
                         showDialog(
                             context: context,
                             builder: (BuildContext context) {
-                              return ChooseCategoryWidget();
+                              return Container();
                             });
                       },
                       text: "University",
@@ -122,7 +121,7 @@ class _TaskScreenState extends State<TaskScreen> {
                         showDialog(
                             context: context,
                             builder: (BuildContext context) {
-                              return TaskPriorityWidget();
+                              return TaskPriorityWidget(function: (value) {  },);
                             });
                       },
                       text: "Default",
