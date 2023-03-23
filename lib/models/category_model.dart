@@ -1,10 +1,10 @@
-import 'package:flutter/cupertino.dart';
+
 
 class CategoryModel {
   String id;
   String category;
-  IconData icon;
-  Color color;
+  String icon;
+  String color;
 
   CategoryModel(
       {required this.id,

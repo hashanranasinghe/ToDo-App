@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:todo_app/screens/Task/calendar_screen.dart';
 import 'package:todo_app/screens/Task/home_screen.dart';
@@ -5,9 +6,12 @@ import 'package:todo_app/screens/focus/focus_screen.dart';
 import 'package:todo_app/screens/user/user_profile_screen.dart';
 import 'package:todo_app/services/validator/validate_handeler.dart';
 import 'package:todo_app/utils/constraints.dart';
+import 'package:todo_app/view%20models/category%20view%20model/category_list_view_model.dart';
+import 'package:todo_app/view%20models/task%20view%20models/add_task_view_model.dart';
 import 'package:todo_app/widgets/Task_priority_widget.dart';
 import 'package:todo_app/widgets/choose_category_widget.dart';
 import 'package:todo_app/widgets/text_field.dart';
+import 'package:provider/provider.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key});
@@ -30,9 +34,23 @@ class _BottomNavBarState extends State<BottomNavBar> {
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   final _form = GlobalKey<FormState>();
+  late AddTaskViewModel addTaskViewModel;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    addTaskViewModel = Provider.of<AddTaskViewModel>(context, listen: false);
+    _populateCategories();
+  }
+
+  _populateCategories() {
+    Provider.of<CategoryListViewModel>(context, listen: false).getCategories();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final vm = Provider.of<CategoryListViewModel>(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(
@@ -71,7 +89,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                     ),
                     child: IconButton(
                         onPressed: () {
-                          _showAddModal(context);
+                          _showAddModal(context, vm);
                         },
                         icon: Icon(
                           Icons.add,
@@ -96,7 +114,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
     );
   }
 
-  void _showAddModal(BuildContext context) {
+  void _showAddModal(
+      BuildContext context, CategoryListViewModel categoryListViewModel) {
     showModalBottomSheet(
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
@@ -132,9 +151,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   ),
                   TextFieldWidget(
                     label: "Description",
-                    onchange: (value) {
-
-                    },
+                    onchange: (value) {},
                     valid: (value) {
                       return Validator.generalValid(value!);
                     },
@@ -164,7 +181,13 @@ class _BottomNavBarState extends State<BottomNavBar> {
                                 showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
-                                      return ChooseCategoryWidget();
+                                      return ChooseCategoryWidget(
+                                          categoryListViewModel:
+                                              categoryListViewModel, function: (categoryModel ) {
+                                            setState(() {
+                                              addTaskViewModel.category = categoryModel;
+                                            });
+                                      },);
                                     });
                               },
                               icon: Icon(Icons.category_outlined)),
@@ -173,7 +196,16 @@ class _BottomNavBarState extends State<BottomNavBar> {
                               showDialog(
                                   context: context,
                                   builder: (BuildContext context) {
-                                    return TaskPriorityWidget();
+                                    return TaskPriorityWidget(
+                                      function: (value) {
+                                        value = value + 1;
+                                        setState(() {
+                                          addTaskViewModel.priority = value;
+                                          print(value);
+                                        });
+                                        Navigator.pop(context);
+                                      },
+                                    );
                                   });
                             },
                             icon: Icon(Icons.flag_outlined),
@@ -185,9 +217,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                         children: [
                           IconButton(
                             onPressed: () {
-                              if (_form.currentState!.validate()) {
-                                print("ok");
-                              }
+                              _addTodo();
                             },
                             icon: Icon(
                               Icons.send_outlined,
@@ -231,5 +261,18 @@ class _BottomNavBarState extends State<BottomNavBar> {
       });
       print(_timeOfDay);
     });
+  }
+
+  _addTodo() async{
+    if (_form.currentState!.validate()) {
+      setState(() {
+        addTaskViewModel.title = titleController.text;
+        addTaskViewModel.description = descriptionController.text;
+        addTaskViewModel.date = _selectedDate;
+        addTaskViewModel.time = _timeOfDay;
+      });
+      await addTaskViewModel.addTodo();
+
+    }
   }
 }
