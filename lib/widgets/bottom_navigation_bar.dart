@@ -1,4 +1,4 @@
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_app/screens/Task/calendar_screen.dart';
 import 'package:todo_app/screens/Task/home_screen.dart';
@@ -35,6 +35,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
   TextEditingController descriptionController = TextEditingController();
   final _form = GlobalKey<FormState>();
   late AddTaskViewModel addTaskViewModel;
+  final user = FirebaseAuth.instance.currentUser;
+
+  bool isSelected = false;
+  final FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
@@ -150,6 +154,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                     controller: titleController,
                   ),
                   TextFieldWidget(
+                    focusNode: _focusNode,
                     label: "Description",
                     onchange: (value) {},
                     valid: (value) {
@@ -166,6 +171,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
                         children: [
                           IconButton(
                             onPressed: () async {
+                              if (_focusNode.hasFocus) {
+                                _focusNode.unfocus();
+                              }
                               await _getCalendar();
                             },
                             icon: Icon(Icons.calendar_month_outlined),
@@ -182,12 +190,15 @@ class _BottomNavBarState extends State<BottomNavBar> {
                                     context: context,
                                     builder: (BuildContext context) {
                                       return ChooseCategoryWidget(
-                                          categoryListViewModel:
-                                              categoryListViewModel, function: (categoryModel ) {
-                                            setState(() {
-                                              addTaskViewModel.category = categoryModel;
-                                            });
-                                      },);
+                                        categoryListViewModel:
+                                            categoryListViewModel,
+                                        function: (categoryModel) {
+                                          setState(() {
+                                            addTaskViewModel.category =
+                                                categoryModel;
+                                          });
+                                        },
+                                      );
                                     });
                               },
                               icon: Icon(Icons.category_outlined)),
@@ -263,16 +274,15 @@ class _BottomNavBarState extends State<BottomNavBar> {
     });
   }
 
-  _addTodo() async{
+  _addTodo() async {
     if (_form.currentState!.validate()) {
       setState(() {
         addTaskViewModel.title = titleController.text;
         addTaskViewModel.description = descriptionController.text;
         addTaskViewModel.date = _selectedDate;
-        addTaskViewModel.time = _timeOfDay;
+        addTaskViewModel.time = _timeOfDay.toString();
       });
-      await addTaskViewModel.addTodo();
-
+      await addTaskViewModel.addTodo(userId: user!.uid);
     }
   }
 }

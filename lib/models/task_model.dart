@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+
 import 'package:todo_app/models/category_model.dart';
 
 class TaskModel {
@@ -8,7 +8,7 @@ class TaskModel {
   int priority;
   CategoryModel category;
   DateTime date;
-  TimeOfDay time;
+  String time;
   bool isDone;
 
   TaskModel(

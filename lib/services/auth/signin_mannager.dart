@@ -29,12 +29,11 @@ class SignInManager extends ChangeNotifier {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: em, password: pw);
-
+      final user = FirebaseAuth.instance.currentUser;
       // Send email verification
       await userCredential.user
           ?.sendEmailVerification()
-          .then((value) => FbHandler.createDocAuto(userModel.toMap(), "user"));
-
+          .then((value) => FbHandler.createDocManual(userModel.toMap(), "user",user!.uid));
 
       res = resOk;
     } on FirebaseAuthException catch (e) {
