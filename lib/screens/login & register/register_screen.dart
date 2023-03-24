@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:todo_app/models/user_model.dart';
@@ -21,6 +23,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController confirmPasswordController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   final _form = GlobalKey<FormState>();
+  final _auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -90,7 +93,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       children: [
                         ButtonField(
                           onpress: () {
+                            FirebaseFirestore firebaseFirestore =
+                                FirebaseFirestore.instance;
+                            User? u = _auth.currentUser;
                             final UserModel user = UserModel(
+                                id: u?.uid,
                                 name: nameController.text,
                                 email: emailController.text);
                             _register(user);

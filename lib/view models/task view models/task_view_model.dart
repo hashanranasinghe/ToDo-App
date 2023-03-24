@@ -19,7 +19,7 @@ class TaskViewModel extends ChangeNotifier {
 
   DateTime get date => taskModel.date;
 
-  TimeOfDay get time => taskModel.time;
+  String get time => taskModel.time;
 
   bool get isDone => taskModel.isDone;
 }

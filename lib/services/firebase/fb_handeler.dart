@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:todo_app/models/user_model.dart';
 import 'package:todo_app/utils/constraints.dart';
 
 class FbHandler {
@@ -102,6 +103,31 @@ class FbHandler {
   }
 
 //get user details
+
+  static Future<UserModel> getUserById({required String id}) async {
+    print("$id ======================================================");
+    final doc =
+        await FirebaseFirestore.instance.collection('user').doc(id).get();
+    final data = doc.data() as Map<String, dynamic>;
+    final user = UserModel.fromMap(data);
+    print(user.email);
+    return user;
+  }
+
+  //create doc for user
+  static Future<int> createOwnDoc(
+      {required String id,
+      required String collectionPathOwn,
+      required String collectionPath,
+      required Map<String, dynamic> model}) async{
+    int res = resFail;
+    FirebaseFirestore firebaseFireStore = FirebaseFirestore.instance;
+    CollectionReference collection =
+        firebaseFireStore.collection(collectionPathOwn);
+    collection.doc(id).collection(collectionPath).add(model);
+    res = resOk;
+    return res;
+  }
 
 //realtimedb
   static Future<int> checkfiledstatus(String collectionpath) async {
