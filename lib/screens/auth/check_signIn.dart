@@ -19,7 +19,8 @@ class CheckSignIn extends StatelessWidget {
             child: CircularProgressIndicator(),
           );
         } else if (snapshot.hasData) {
-          return const BottomNavBar();
+          final user = FirebaseAuth.instance.currentUser;
+          return BottomNavBar(userId: user!.uid);
         } else if (snapshot.hasError) {
           return const Center(
             child: Text("Something went to wrong!!"),

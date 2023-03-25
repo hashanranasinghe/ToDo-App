@@ -101,6 +101,7 @@ class _ChooseCategoryWidgetState extends State<ChooseCategoryWidget> {
               // render "Add Category" item
               return InkWell(
                 onTap: () {
+                  Navigator.pop(context);
                   openAddCategory(context);
                 },
                 child: Column(

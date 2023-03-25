@@ -1,13 +1,13 @@
 
 
 class CategoryModel {
-  String id;
+  String? id;
   String category;
   String icon;
   String color;
 
   CategoryModel(
-      {required this.id,
+      {this.id,
       required this.category,
       required this.icon,
       required this.color});

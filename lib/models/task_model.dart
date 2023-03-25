@@ -1,4 +1,5 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:todo_app/models/category_model.dart';
 
 class TaskModel {
@@ -26,12 +27,11 @@ class TaskModel {
       title: map['title'],
       description: map['description'],
       priority: map['priority'],
-      date: map['date'],
+      date: (map['date'] as Timestamp).toDate(),
       time: map['time'],
       category: CategoryModel.fromMap(map['category']));
 
   Map<String, dynamic> toMap() => {
-        'id': id,
         'title': title,
         'description': description,
         'priority': priority,

@@ -1,5 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_app/utils/constraints.dart';
+import 'package:todo_app/view%20models/category%20view%20model/add_category_view_model.dart';
+import 'package:todo_app/view%20models/category%20view%20model/category_list_view_model.dart';
 import 'package:todo_app/widgets/button_field.dart';
 import 'package:todo_app/widgets/text_field.dart';
 
@@ -11,10 +16,24 @@ class AddCategoryScreen extends StatefulWidget {
 }
 
 class _AddCategoryScreenState extends State<AddCategoryScreen> {
+  late AddCategoryViewModel addCategoryViewModel;
+  late CategoryListViewModel categoryListViewModel;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    addCategoryViewModel =
+        Provider.of<AddCategoryViewModel>(context, listen: false);
+    categoryListViewModel= Provider.of<CategoryListViewModel>(context,listen: false);
+  }
+
   IconData? icon;
   Color? selectedColor;
 
   TextEditingController categoryController = TextEditingController();
+  final user = FirebaseAuth.instance.currentUser;
+  final FocusNode _focusNode = FocusNode();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,7 +75,10 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                         ),
                       ),
                       onPressed: () {
-                        _showIconPickerDialog(context);
+                        FocusScope.of(context).unfocus();
+                        Future.delayed(Duration(milliseconds: 50), () {
+                          _showIconPickerDialog(context);
+                        });
                       },
                       child: Text(
                         "Choose icon from library",
@@ -115,7 +137,8 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                             setState(() {
                               selectedColor = colors[index];
                             });
-                            print('Selected color: ${Convert.getColorString(color: colors[index])}');
+                            print(
+                                'Selected color: ${Convert.getColorString(color: selectedColor!)}');
                           },
                           child: Container(
                             width: 40,
@@ -184,7 +207,9 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                       width: 80,
                     ),
                     ButtonField(
-                      onpress: () {},
+                      onpress: () async {
+                        _addCategory();
+                      },
                       text: "Create Category",
                       fontsize: 15,
                     )
@@ -249,5 +274,16 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
         print('Selected icon: $selectedIcon');
       }
     });
+  }
+
+  _addCategory() async {
+    addCategoryViewModel.category = categoryController.text;
+    addCategoryViewModel.color = Convert.getColorString(color: selectedColor!);
+    addCategoryViewModel.icon = icon!.codePoint.toString();
+
+    await addCategoryViewModel.addCategory(userId: user!.uid);
+    await categoryListViewModel.getCategories(userId: user!.uid).whenComplete(() =>
+        Fluttertoast.showToast(msg: 'Category added Successfully')
+            .whenComplete(() => Navigator.pop(context)));
   }
 }

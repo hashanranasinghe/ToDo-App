@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_app/services/auth/signin_mannager.dart';
+import 'package:todo_app/services/firebase/fb_handeler.dart';
 import 'package:todo_app/view%20models/user%20view%20model/userViewModel.dart';
 import 'package:todo_app/widgets/button_field.dart';
 
@@ -29,8 +29,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           ),
           body: Center(
             child: ButtonField(
-              onpress: () {
-                SignInManager().signOut();
+              onpress: () async{
+                await FbHandler.getAllTasks(id: user!.uid);
+                //SignInManager().signOut();
               },
               text: "Sign Out",
             ),

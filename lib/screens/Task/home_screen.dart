@@ -1,20 +1,32 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:todo_app/utils/navigation.dart';
+import 'package:provider/provider.dart';
+
+import 'package:todo_app/view%20models/task%20view%20models/task_list_view_model.dart';
 import 'package:todo_app/widgets/text_field.dart';
 import 'package:todo_app/widgets/todo_list_card.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  final String userId;
+  const HomeScreen({Key? key, required this.userId}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Provider.of<TaskListViewModel>(context, listen: false)
+        .getAllTasks(userId: widget.userId);
+  }
+
   TextEditingController searchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final vm = Provider.of<TaskListViewModel>(context);
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -45,21 +57,27 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(
                 height: 20,
               ),
-              TodoListCard(
-                function: () {
-                  openTask(context);
-                },
-                title: 'Do Math Homework',
-                time: 'Today At 16.45',
-                category: 'University',
-                color: Colors.blue,
-                priority: '1',
-                icon: Icons.school_outlined,
-              )
+              _updateUi(vm)
             ],
           ),
         ),
       ),
     );
+  }
+  Widget _updateUi(TaskListViewModel vm) {
+    switch (vm.status) {
+      case Status.loading:
+        return Align(
+          alignment: Alignment.center,
+          child: CircularProgressIndicator(),
+        );
+      case Status.success:
+        return TodoListCard(function: (){}, tasks: vm.tasks);
+      case Status.empty:
+        return Align(
+          alignment: Alignment.center,
+          child: Text("No forum found...."),
+        );
+    }
   }
 }
