@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_calendar/flutter_clean_calendar.dart';
-import 'package:todo_app/utils/navigation.dart';
+
 import 'package:todo_app/widgets/button_field.dart';
-import 'package:todo_app/widgets/todo_list_card.dart';
+
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -143,17 +143,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 ),
               ),
             ),
-            TodoListCard(
-              function: () {
-                openTask(context);
-              },
-              title: 'Do Math Homework',
-              time: 'Today At 16.45',
-              category: 'University',
-              color: Colors.blue,
-              priority: '1',
-              icon: Icons.school_outlined,
-            )
           ],
         ),
       ),

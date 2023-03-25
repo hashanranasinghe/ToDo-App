@@ -6,7 +6,7 @@ class CategoryViewModel extends ChangeNotifier {
 
   CategoryViewModel({required this.categoryModel});
 
-  String get id => categoryModel.id;
+  String? get id => categoryModel.id;
 
   String get category => categoryModel.category;
 

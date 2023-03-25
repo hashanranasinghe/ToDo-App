@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:todo_app/screens/Task/calendar_screen.dart';
 import 'package:todo_app/screens/Task/home_screen.dart';
 import 'package:todo_app/screens/focus/focus_screen.dart';
@@ -8,13 +9,15 @@ import 'package:todo_app/services/validator/validate_handeler.dart';
 import 'package:todo_app/utils/constraints.dart';
 import 'package:todo_app/view%20models/category%20view%20model/category_list_view_model.dart';
 import 'package:todo_app/view%20models/task%20view%20models/add_task_view_model.dart';
+import 'package:todo_app/view%20models/task%20view%20models/task_list_view_model.dart';
 import 'package:todo_app/widgets/Task_priority_widget.dart';
 import 'package:todo_app/widgets/choose_category_widget.dart';
 import 'package:todo_app/widgets/text_field.dart';
 import 'package:provider/provider.dart';
 
 class BottomNavBar extends StatefulWidget {
-  const BottomNavBar({super.key});
+  final String? userId;
+  const BottomNavBar({super.key, this.userId});
 
   @override
   _BottomNavBarState createState() => _BottomNavBarState();
@@ -24,17 +27,13 @@ class _BottomNavBarState extends State<BottomNavBar> {
   int _currentIndex = 2;
   late DateTime _selectedDate;
   late TimeOfDay _timeOfDay;
-  List<Widget> _screens = [
-    HomeScreen(),
-    CalendarScreen(),
-    HomeScreen(),
-    FocusScreen(),
-    UserProfileScreen()
-  ];
+  final List<Widget> _screens = [];
+
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   final _form = GlobalKey<FormState>();
   late AddTaskViewModel addTaskViewModel;
+  late TaskListViewModel taskListViewModel;
   final user = FirebaseAuth.instance.currentUser;
 
   bool isSelected = false;
@@ -45,11 +44,20 @@ class _BottomNavBarState extends State<BottomNavBar> {
     // TODO: implement initState
     super.initState();
     addTaskViewModel = Provider.of<AddTaskViewModel>(context, listen: false);
+    taskListViewModel = Provider.of<TaskListViewModel>(context, listen: false);
     _populateCategories();
+    _screens.addAll([
+      HomeScreen(userId: widget.userId.toString()),
+      CalendarScreen(),
+      HomeScreen(userId: widget.userId.toString()),
+      FocusScreen(),
+      UserProfileScreen(),
+    ]);
   }
 
   _populateCategories() {
-    Provider.of<CategoryListViewModel>(context, listen: false).getCategories();
+    Provider.of<CategoryListViewModel>(context, listen: false)
+        .getCategories(userId: widget.userId.toString());
   }
 
   @override
@@ -261,7 +269,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
     setState(() {
       _selectedDate = newDate;
     });
-    print(_selectedDate);
   }
 
   _getTime() {
@@ -270,7 +277,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
       setState(() {
         _timeOfDay = value!;
       });
-      print(_timeOfDay);
     });
   }
 
@@ -280,9 +286,12 @@ class _BottomNavBarState extends State<BottomNavBar> {
         addTaskViewModel.title = titleController.text;
         addTaskViewModel.description = descriptionController.text;
         addTaskViewModel.date = _selectedDate;
-        addTaskViewModel.time = _timeOfDay.toString();
+        addTaskViewModel.time = "${_timeOfDay.hour}:${_timeOfDay.minute}";
       });
       await addTaskViewModel.addTodo(userId: user!.uid);
+      await taskListViewModel.getAllTasks(userId: user!.uid).whenComplete(() =>
+          Fluttertoast.showToast(msg: 'Task added Successfully')
+              .whenComplete(() => Navigator.pop(context)));
     }
   }
 }

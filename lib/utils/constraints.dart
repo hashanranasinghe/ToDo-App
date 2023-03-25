@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 const logo = "assets/images/logo.png";
 
@@ -79,5 +80,34 @@ class Convert {
         match?.group(1); // Extract the hexadecimal value from the match
     print(hexValue);
     return hexValue.toString();
+  }
+
+  static String getTime({required String time}) {
+    List<String> parts = time.split(":");
+    int hour = int.parse(parts[0]);
+    int minute = int.parse(parts[1]);
+    TimeOfDay timeOfDay = TimeOfDay(hour: hour, minute: minute);
+    final DateFormat formatter = DateFormat('h:mm a');
+    String timeString = formatter
+        .format(DateTime(2023, 1, 1, timeOfDay.hour, timeOfDay.minute));
+    return timeString;
+  }
+
+  static String getDate({required DateTime date}) {
+    date = DateTime(date.year, date.month, date.day);
+    DateTime now = DateTime.now();
+    DateTime today = DateTime(now.year, now.month, now.day);
+
+    if (date.isAtSameMomentAs(today)) {
+      return "Today At ";
+    } else {
+      String day = "${DateFormat('yyyy MMMM d').format(date)} At ";
+      return day;
+    }
+  }
+
+  static String upperCase({required String text}){
+    String capitalizedText = text.substring(0, 1).toUpperCase() + text.substring(1);
+    return capitalizedText;
   }
 }

@@ -6,6 +6,7 @@ import 'package:todo_app/utils/constraints.dart';
 import 'package:todo_app/view%20models/category%20view%20model/add_category_view_model.dart';
 import 'package:todo_app/view%20models/category%20view%20model/category_list_view_model.dart';
 import 'package:todo_app/view%20models/task%20view%20models/add_task_view_model.dart';
+import 'package:todo_app/view%20models/task%20view%20models/task_list_view_model.dart';
 import 'package:todo_app/view%20models/user%20view%20model/userViewModel.dart';
 
 void main() async {
@@ -16,6 +17,7 @@ void main() async {
     ChangeNotifierProvider(create: (_) => AddTaskViewModel()),
     ChangeNotifierProvider(create: (_) => AddCategoryViewModel()),
     ChangeNotifierProvider(create: (_) => CategoryListViewModel()),
+    ChangeNotifierProvider(create: (_) => TaskListViewModel()),
   ], child: const MyApp()));
 }
 

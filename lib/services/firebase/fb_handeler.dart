@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+
+import 'package:todo_app/models/category_model.dart';
+import 'package:todo_app/models/task_model.dart';
 import 'package:todo_app/models/user_model.dart';
 import 'package:todo_app/utils/constraints.dart';
 
@@ -103,9 +106,7 @@ class FbHandler {
   }
 
 //get user details
-
   static Future<UserModel> getUserById({required String id}) async {
-    print("$id ======================================================");
     final doc =
         await FirebaseFirestore.instance.collection('user').doc(id).get();
     final data = doc.data() as Map<String, dynamic>;
@@ -119,7 +120,7 @@ class FbHandler {
       {required String id,
       required String collectionPathOwn,
       required String collectionPath,
-      required Map<String, dynamic> model}) async{
+      required Map<String, dynamic> model}) async {
     int res = resFail;
     FirebaseFirestore firebaseFireStore = FirebaseFirestore.instance;
     CollectionReference collection =
@@ -127,6 +128,47 @@ class FbHandler {
     collection.doc(id).collection(collectionPath).add(model);
     res = resOk;
     return res;
+  }
+
+  //getCollectionList
+  static Future<List<TaskModel>> getAllTasks({required String id}) async {
+    List<TaskModel> enlist = [];
+    TaskModel model;
+    QuerySnapshot querySnapshot = await firestoreInstance
+        .collection("user")
+        .doc(id)
+        .collection("task")
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      var a = querySnapshot.docs[i];
+
+      model = TaskModel.fromMap(a.data() as Map<String, dynamic>);
+
+      enlist.add(model);
+    }
+
+    return enlist;
+  }
+
+  //getCollectionList
+  static Future<List<CategoryModel>> getAllCategory(
+      {required String id}) async {
+    List<CategoryModel> enlist = [];
+    CategoryModel model;
+    QuerySnapshot querySnapshot = await firestoreInstance
+        .collection("user")
+        .doc(id)
+        .collection("category")
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      var a = querySnapshot.docs[i];
+
+      model = CategoryModel.fromMap(a.data() as Map<String, dynamic>);
+
+      enlist.add(model);
+    }
+
+    return enlist;
   }
 
 //realtimedb
