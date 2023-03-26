@@ -65,7 +65,9 @@ class _TaskDeleteDialogState extends State<TaskDeleteDialog> {
                             TextStyle(color: kPrimaryButtonColor, fontSize: 20),
                       )),
                   ButtonField(
-                    onpress: () {},
+                    onpress: () {
+                      widget.function();
+                    },
                     text: "Delete",
                     pright: screenWidth * 0.15,
                     pleft: screenWidth * 0.15,

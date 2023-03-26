@@ -93,6 +93,21 @@ class Convert {
     return timeString;
   }
 
+  static TimeOfDay convertTime({required String time}) {
+    DateFormat dateFormat = DateFormat('yyyy-MM-dd hh:mm a');
+    DateTime dateTime = dateFormat.parse('1970-01-01 $time');
+    TimeOfDay timeOfDay = TimeOfDay.fromDateTime(dateTime);
+    return timeOfDay;
+  }
+
+  static String convertTimeOfDayToString({required TimeOfDay time}) {
+    int h = time.hour;
+    int m= time.minute;
+    TimeOfDay timeOfDay = TimeOfDay(hour: h, minute: m);
+    String formattedTime = DateFormat('hh:mm a').format(DateTime(2022, 1, 1, timeOfDay.hour, timeOfDay.minute));
+    return formattedTime;
+
+  }
   static String getDate({required DateTime date}) {
     date = DateTime(date.year, date.month, date.day);
     DateTime now = DateTime.now();

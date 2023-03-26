@@ -21,14 +21,25 @@ class AddTaskViewModel extends ChangeNotifier {
         date: date,
         time: time,
         category: category);
-    print(taskModel.title);
-    print(taskModel.description);
-    print(taskModel.priority);
-    print(
-        "${taskModel.category.id},${taskModel.category.category},${taskModel.category.icon},${taskModel.category.color}");
-    print(taskModel.date);
-    print(taskModel.time);
-    await FbHandler.createOwnDoc(id: userId, collectionPathOwn: "user", collectionPath: "task", model: taskModel.toMap());
+    await FbHandler.createOwnDoc(
+        id: userId,
+        collectionPathOwn: "user",
+        collectionPath: "task",
+        model: taskModel.toMap());
+    notifyListeners();
+  }
+
+  Future<void> updateTodo({required String userId}) async {
+    final taskModel = TaskModel(
+        id: id,
+        title: title,
+        description: description,
+        priority: priority,
+        date: date,
+        time: time,
+        category: category);
+    await FbHandler.updateDoc(
+        taskModel.toMap(), ["user", "task"], [userId, taskModel.id.toString()]);
     notifyListeners();
   }
 }

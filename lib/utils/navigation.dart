@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/models/task_model.dart';
 import 'package:todo_app/screens/Task/add_category_screen.dart';
 import 'package:todo_app/screens/Task/task-screen.dart';
 import 'package:todo_app/screens/auth/check_signIn.dart';
@@ -34,10 +35,14 @@ void openTodoList(BuildContext context) async {
   Navigator.push(context,
       MaterialPageRoute(builder: (context) => BottomNavBar()));
 }
-
-void openTask(BuildContext context) async {
+void openTodoListAfterDelete(BuildContext context,String userId) async {
   Navigator.push(context,
-      MaterialPageRoute(fullscreenDialog:true,builder: (context) => TaskScreen()));
+      MaterialPageRoute(builder: (context) => BottomNavBar(userId: userId,)));
+}
+
+void openTask(BuildContext context,TaskModel taskModel) async {
+  Navigator.push(context,
+      MaterialPageRoute(fullscreenDialog:true,builder: (context) => TaskScreen(taskModel: taskModel)));
 }
 
 void openFocus(BuildContext context) async {

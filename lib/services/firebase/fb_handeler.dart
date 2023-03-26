@@ -72,13 +72,15 @@ class FbHandler {
   }
 
 //update doc
-  static Future<int> updateDoc(
-      Map<String, dynamic> model, String collectionpath, String docid) async {
+  static Future<int> updateDoc(Map<String, dynamic> model,
+      List<String> collection, List<String> docId) async {
     int res = resFail;
     try {
       await firestoreInstance
-          .collection(collectionpath)
-          .doc(docid)
+          .collection(collection[0])
+          .doc(docId[0])
+          .collection(collection[1])
+          .doc(docId[1])
           .update(model)
           .then((_) {
         print("update doc");
@@ -92,10 +94,16 @@ class FbHandler {
   }
 
   //delete doc
-  static Future<int> deleteDoc(String collection, String docId) async {
+  static Future<int> deleteDoc(
+      {required List<String> collection, required List<String> docId}) async {
     int res = resFail;
     try {
-      await firestoreInstance.collection(collection).doc(docId).delete();
+      await firestoreInstance
+          .collection(collection[0])
+          .doc(docId[0])
+          .collection(collection[1])
+          .doc(docId[1])
+          .delete();
       print("delete doc");
       res = resOk;
     } on Exception catch (e) {
@@ -115,6 +123,20 @@ class FbHandler {
     return user;
   }
 
+  //get a task details
+  static Future<TaskModel> getTask(
+      {required String userId, required String taskId}) async {
+    final doc = await FirebaseFirestore.instance
+        .collection('user')
+        .doc(userId)
+        .collection('task')
+        .doc(taskId)
+        .get();
+    final data = doc.data() as Map<String, dynamic>;
+    final task = TaskModel.fromMap(taskId, data);
+    return task;
+  }
+
   //create doc for user
   static Future<int> createOwnDoc(
       {required String id,
@@ -130,7 +152,7 @@ class FbHandler {
     return res;
   }
 
-  //getCollectionList
+  //getTaskList
   static Future<List<TaskModel>> getAllTasks({required String id}) async {
     List<TaskModel> enlist = [];
     TaskModel model;
@@ -150,7 +172,7 @@ class FbHandler {
     return enlist;
   }
 
-  //getCollectionList
+  //getCategoryList
   static Future<List<CategoryModel>> getAllCategory(
       {required String id}) async {
     List<CategoryModel> enlist = [];

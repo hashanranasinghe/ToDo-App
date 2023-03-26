@@ -1,6 +1,11 @@
+
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_app/models/task_model.dart';
+import 'package:todo_app/services/firebase/fb_handeler.dart';
+import 'package:todo_app/utils/navigation.dart';
 
 import 'package:todo_app/view%20models/task%20view%20models/task_list_view_model.dart';
 import 'package:todo_app/widgets/text_field.dart';
@@ -59,7 +64,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 20,
               ),
               Container(
-                height: screenHeight*0.6, // Set a fixed height for the container
+                height:
+                    screenHeight * 0.6, // Set a fixed height for the container
                 child: _updateUi(vm),
               ),
             ],
@@ -77,7 +83,13 @@ class _HomeScreenState extends State<HomeScreen> {
           child: CircularProgressIndicator(),
         );
       case Status.success:
-        return TodoListCard(function: () {}, tasks: vm.tasks);
+        return TodoListCard(
+            function: (taskId) async {
+              final TaskModel taskModel = await FbHandler.getTask(
+                  userId: widget.userId, taskId: taskId);
+              openTask(context, taskModel);
+            },
+            tasks: vm.tasks);
       case Status.empty:
         return Align(
           alignment: Alignment.center,
