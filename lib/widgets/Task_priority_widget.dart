@@ -4,14 +4,21 @@ import 'package:todo_app/widgets/button_field.dart';
 
 class TaskPriorityWidget extends StatefulWidget {
   final Function(int) function;
-  const TaskPriorityWidget({Key? key, required this.function}) : super(key: key);
+  final int? selectIndex;
+  const TaskPriorityWidget({Key? key, required this.function, this.selectIndex}) : super(key: key);
 
   @override
   State<TaskPriorityWidget> createState() => _TaskPriorityWidgetState();
 }
 
 class _TaskPriorityWidgetState extends State<TaskPriorityWidget> {
-  int _selectedIndex = -1;
+  late int selectIndex;
+  @override
+  void initState() {
+    super.initState();
+    widget.selectIndex == null?selectIndex = -1:selectIndex =widget.selectIndex!-1;
+  }
+
   @override
   Widget build(BuildContext context) {
     int itemCount = 20; // replace with your actual item count
@@ -61,13 +68,13 @@ class _TaskPriorityWidgetState extends State<TaskPriorityWidget> {
                 childAspectRatio: 1,
               ),
               itemBuilder: (BuildContext context, int index) {
-                bool isSelected = index == _selectedIndex;
+                bool isSelected = index == selectIndex;
                 Color itemColor =
                     isSelected ? kPrimaryButtonColor : kPrimaryTileColor;
                 return InkWell(
                   onTap: () {
                     setState(() {
-                      _selectedIndex = index; // update the selected index
+                      selectIndex = index; // update the selected index
                     });
                   },
                   child: Container(
@@ -105,7 +112,7 @@ class _TaskPriorityWidgetState extends State<TaskPriorityWidget> {
                   pleft: 50,
                   pright: 50,
                   onpress: () {
-                    widget.function(_selectedIndex);
+                    widget.function(selectIndex);
                   },
                   text: "Save",
                 )

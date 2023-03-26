@@ -4,7 +4,7 @@ import 'package:todo_app/view%20models/task%20view%20models/task_view_model.dart
 
 class TodoListCard extends StatefulWidget {
   final List<TaskViewModel> tasks;
-  final Function function;
+  final Function(String) function;
   const TodoListCard({Key? key, required this.function, required this.tasks})
       : super(key: key);
 
@@ -24,7 +24,7 @@ class _TodoListCardState extends State<TodoListCard> {
 
           return InkWell(
             onTap: () {
-              widget.function();
+              widget.function(task.id.toString());
             },
             child: Card(
                 child: Padding(

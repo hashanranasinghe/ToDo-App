@@ -6,11 +6,12 @@ import 'package:todo_app/widgets/text_field.dart';
 class EditTaskDialog extends StatefulWidget {
   final TextEditingController titleController;
   final TextEditingController descriptionController;
+  final Function(String,String) onSave;
 
   const EditTaskDialog(
       {super.key,
       required this.titleController,
-      required this.descriptionController});
+      required this.descriptionController, required this.onSave});
 
   @override
   State<EditTaskDialog> createState() => _EditTaskDialogState();
@@ -51,7 +52,7 @@ class _EditTaskDialogState extends State<EditTaskDialog> {
                       });
                     },
                     child: Text(
-                      "Do Math HomeWork",
+                      widget.titleController.text,
                       style: TextStyle(fontSize: 20),
                     ))
               ],
@@ -76,7 +77,7 @@ class _EditTaskDialogState extends State<EditTaskDialog> {
                       });
                     },
                     child: Text(
-                      "Do chapter 2 to 5 for next week",
+                      widget.descriptionController.text,
                       style: TextStyle(fontSize: 20),
                     ))
               ],
@@ -97,7 +98,11 @@ class _EditTaskDialogState extends State<EditTaskDialog> {
                             TextStyle(color: kPrimaryButtonColor, fontSize: 20),
                       )),
                   ButtonField(
-                    onpress: () {},
+                    onpress: () {
+                      widget.onSave(
+                          widget.titleController.text, widget.descriptionController.text);
+                      Navigator.pop(context);
+                    },
                     text: "Edit",
                     pright: screenWidth * 0.15,
                     pleft: screenWidth * 0.15,
