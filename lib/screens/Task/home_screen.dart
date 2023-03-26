@@ -27,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<TaskListViewModel>(context);
+    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -57,13 +58,17 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(
                 height: 20,
               ),
-              _updateUi(vm)
+              Container(
+                height: screenHeight*0.6, // Set a fixed height for the container
+                child: _updateUi(vm),
+              ),
             ],
           ),
         ),
       ),
     );
   }
+
   Widget _updateUi(TaskListViewModel vm) {
     switch (vm.status) {
       case Status.loading:
@@ -72,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: CircularProgressIndicator(),
         );
       case Status.success:
-        return TodoListCard(function: (){}, tasks: vm.tasks);
+        return TodoListCard(function: () {}, tasks: vm.tasks);
       case Status.empty:
         return Align(
           alignment: Alignment.center,

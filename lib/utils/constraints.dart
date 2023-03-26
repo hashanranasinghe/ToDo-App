@@ -100,11 +100,16 @@ class Convert {
 
     if (date.isAtSameMomentAs(today)) {
       return "Today At ";
+    } else if (date.isAtSameMomentAs(today.add(Duration(days: 1)))) {
+      return "Tomorrow At ";
+    } else if (date.isAtSameMomentAs(today.subtract(Duration(days: 1)))) {
+      return "Yesterday At ";
     } else {
       String day = "${DateFormat('yyyy MMMM d').format(date)} At ";
       return day;
     }
   }
+
 
   static String upperCase({required String text}){
     String capitalizedText = text.substring(0, 1).toUpperCase() + text.substring(1);

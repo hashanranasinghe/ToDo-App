@@ -22,8 +22,8 @@ class TaskModel {
       required this.category,
       this.isDone = false});
 
-  factory TaskModel.fromMap(map) => TaskModel(
-      id: map['id'],
+  factory TaskModel.fromMap(String id, map) => TaskModel(
+      id: id,
       title: map['title'],
       description: map['description'],
       priority: map['priority'],
