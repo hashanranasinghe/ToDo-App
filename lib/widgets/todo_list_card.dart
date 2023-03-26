@@ -15,6 +15,7 @@ class TodoListCard extends StatefulWidget {
 class _TodoListCardState extends State<TodoListCard> {
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
     return ListView.builder(
         shrinkWrap: true,
         itemCount: widget.tasks.length,
@@ -43,19 +44,25 @@ class _TodoListCardState extends State<TodoListCard> {
                           SizedBox(
                             height: 10,
                           ),
-                          Row(
-                            children: [
-                              Text(
-                                Convert.getDate(date: task.date),
-                                style: TextStyle(
-                                    color: Color(0xFFAFAFAF), fontSize: 12),
-                              ),
-                              Text(
-                                Convert.getTime(time: task.time),
-                                style: TextStyle(
-                                    color: Color(0xFFAFAFAF), fontSize: 12),
-                              ),
-                            ],
+                          SizedBox(
+                            width: screenWidth*0.35,
+                            child: Wrap(
+                              alignment: WrapAlignment.center,
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              children: [
+                                Text(
+
+                                  Convert.getDate(date: task.date),
+                                  style: TextStyle(
+                                      color: Color(0xFFAFAFAF), fontSize: 12),
+                                ),
+                                Text(
+                                  Convert.getTime(time: task.time),
+                                  style: TextStyle(
+                                      color: Color(0xFFAFAFAF), fontSize: 12),
+                                ),
+                              ],
+                            ),
                           )
                         ],
                       ),
@@ -71,26 +78,34 @@ class _TodoListCardState extends State<TodoListCard> {
                                 children: [
                                   Container(
                                     decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                        color: Color(int.parse(
-                                                task.category.color,
-                                                radix: 16))
-                                            .withOpacity(1.0)),
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: Color(int.parse(task.category.color, radix: 16)).withOpacity(1.0),
+                                    ),
                                     padding: EdgeInsets.all(5),
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          IconData(
+                                    child: SizedBox(
+                                      width: screenWidth*0.23,
+                                      child: Wrap(
+                                        alignment: WrapAlignment.center,
+                                        crossAxisAlignment: WrapCrossAlignment.center,
+                                        children: [
+                                          Icon(
+                                            IconData(
                                               int.parse(task.category.icon),
-                                              fontFamily: 'MaterialIcons'),
-                                        ),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        Text(task.category.category)
-                                      ],
+                                              fontFamily: 'MaterialIcons',
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            task.category.category,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
+
                                   SizedBox(
                                     width: 10,
                                   ),

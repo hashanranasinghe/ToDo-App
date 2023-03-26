@@ -142,7 +142,7 @@ class FbHandler {
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       var a = querySnapshot.docs[i];
 
-      model = TaskModel.fromMap(a.data() as Map<String, dynamic>);
+      model = TaskModel.fromMap(a.id, a.data() as Map<String, dynamic>);
 
       enlist.add(model);
     }
