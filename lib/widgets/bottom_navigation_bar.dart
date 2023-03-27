@@ -48,7 +48,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
     _populateCategories();
     _screens.addAll([
       HomeScreen(userId: widget.userId.toString()),
-      CalendarScreen(),
+      CalendarScreen(
+        userId: user!.uid,
+      ),
       HomeScreen(userId: widget.userId.toString()),
       FocusScreen(),
       UserProfileScreen(),
