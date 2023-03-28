@@ -5,7 +5,9 @@ import 'package:todo_app/view%20models/task%20view%20models/task_view_model.dart
 class TodoListCard extends StatefulWidget {
   final List<TaskViewModel> tasks;
   final Function(String) function;
-  const TodoListCard({Key? key, required this.function, required this.tasks})
+  final DateTime? selectedDay;
+  const TodoListCard(
+      {Key? key, required this.function, required this.tasks, this.selectedDay})
       : super(key: key);
 
   @override
@@ -22,6 +24,7 @@ class _TodoListCardState extends State<TodoListCard> {
         itemBuilder: (context, index) {
           final task = widget.tasks[index];
 
+          if(widget.selectedDay == task.date || widget.selectedDay == null){
           return InkWell(
             onTap: () {
               widget.function(task.id.toString());
@@ -45,13 +48,12 @@ class _TodoListCardState extends State<TodoListCard> {
                             height: 10,
                           ),
                           SizedBox(
-                            width: screenWidth*0.35,
+                            width: screenWidth * 0.35,
                             child: Wrap(
                               alignment: WrapAlignment.center,
                               crossAxisAlignment: WrapCrossAlignment.center,
                               children: [
                                 Text(
-
                                   Convert.getDate(date: task.date),
                                   style: TextStyle(
                                       color: Color(0xFFAFAFAF), fontSize: 12),
@@ -79,14 +81,18 @@ class _TodoListCardState extends State<TodoListCard> {
                                   Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(5),
-                                      color: Color(int.parse(task.category.color, radix: 16)).withOpacity(1.0),
+                                      color: Color(int.parse(
+                                              task.category.color,
+                                              radix: 16))
+                                          .withOpacity(1.0),
                                     ),
                                     padding: EdgeInsets.all(5),
                                     child: SizedBox(
-                                      width: screenWidth*0.23,
+                                      width: screenWidth * 0.23,
                                       child: Wrap(
                                         alignment: WrapAlignment.center,
-                                        crossAxisAlignment: WrapCrossAlignment.center,
+                                        crossAxisAlignment:
+                                            WrapCrossAlignment.center,
                                         children: [
                                           Icon(
                                             IconData(
@@ -105,7 +111,6 @@ class _TodoListCardState extends State<TodoListCard> {
                                       ),
                                     ),
                                   ),
-
                                   SizedBox(
                                     width: 10,
                                   ),
@@ -139,7 +144,9 @@ class _TodoListCardState extends State<TodoListCard> {
                 ],
               ),
             )),
-          );
+          );}else{
+            return Container();
+          }
         });
   }
 }

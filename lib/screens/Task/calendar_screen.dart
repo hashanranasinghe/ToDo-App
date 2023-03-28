@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_calendar/flutter_clean_calendar.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_app/models/task_model.dart';
+import 'package:todo_app/services/firebase/fb_handeler.dart';
+import 'package:todo_app/utils/navigation.dart';
 import 'package:todo_app/view%20models/task%20view%20models/task_list_view_model.dart';
 import 'package:todo_app/view%20models/task%20view%20models/task_view_model.dart';
 import 'package:todo_app/widgets/todo_list_card.dart';
@@ -14,6 +17,7 @@ class CalendarScreen extends StatefulWidget {
 }
 
 class _CalendarScreenState extends State<CalendarScreen> {
+  late DateTime _selectedDay;
   @override
   void initState() {
     super.initState();
@@ -35,7 +39,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
           SizedBox(
             height: 600,
             child: ListView.builder(
-                itemCount: vm.tasks.length,
+                itemCount: 1,
                 itemBuilder: (context, index) {
                   for (TaskViewModel task in vm.tasks) {
                     DateTime date = task.date;
@@ -51,37 +55,66 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
                   print(vm.tasks);
                   print(eventsMap);
-                  return Calendar(
-                    startOnMonday: true,
-                    weekDays: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'],
-                    events: eventsMap,
-                    eventListBuilder: (context, index) {
-                      return TodoListCard(
-                          function: (value) {}, tasks: vm.tasks);
-                    },
-                    onRangeSelected: (range) =>
-                        print('Range is ${range.from}, ${range.to}'),
-                    onDateSelected: (date) => _handleNewDate(date),
-                    isExpandable: true,
-                    eventDoneColor: Colors.green,
-                    selectedColor: Colors.pink,
-                    todayColor: Colors.blue,
-                    eventColor: Colors.grey,
-                    todayButtonText: 'Today',
-                    expandableDateFormat: 'EEEE, dd. MMMM yyyy',
-                    dayOfWeekStyle: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 11),
+                  return SafeArea(
+                    child: Calendar(
+                      startOnMonday: true,
+                      weekDays: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'],
+                      events: eventsMap,
+                      eventListBuilder: (context, index) {
+                        return _updateUi(vm);
+                      },
+                      onRangeSelected: (range) =>
+                          print('Range is ${range.from}, ${range.to}'),
+                      onDateSelected: (date) => _handleNewDate(date),
+                      isExpanded: true,
+                      isExpandable: true,
+                      eventDoneColor: Colors.green,
+                      selectedColor: Colors.pink,
+                      todayColor: Colors.blue,
+                      eventColor: Colors.white,
+                      todayButtonText: 'Today',
+                      expandableDateFormat: 'EEEE, dd. MMMM yyyy',
+                      dayOfWeekStyle: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 11),
+                    ),
                   );
                 }),
-          )
+          ),
         ],
       ),
     );
   }
 
+  Widget _updateUi(TaskListViewModel vm) {
+    switch (vm.status) {
+      case Status.loading:
+        return Align(
+          alignment: Alignment.center,
+          child: CircularProgressIndicator(),
+        );
+      case Status.success:
+        return TodoListCard(
+            selectedDay: _selectedDay,
+            function: (taskId) async {
+              final TaskModel taskModel = await FbHandler.getTask(
+                  userId: widget.userId, taskId: taskId);
+              openTask(context, taskModel);
+            },
+            tasks: vm.tasks);
+      case Status.empty:
+        return Align(
+          alignment: Alignment.center,
+          child: Text("No forum found...."),
+        );
+    }
+  }
+
   void _handleNewDate(date) {
-    print('Date selected: $date');
+    setState(() {
+      _selectedDay = date;
+    });
+    print('Date selected: $_selectedDay');
   }
 }
