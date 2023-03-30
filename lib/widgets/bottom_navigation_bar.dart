@@ -66,7 +66,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
   Widget build(BuildContext context) {
     final vm = Provider.of<CategoryListViewModel>(context);
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           _screens[_currentIndex],
