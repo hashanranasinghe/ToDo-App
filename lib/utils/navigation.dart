@@ -8,6 +8,7 @@ import 'package:todo_app/screens/focus/focus_screen.dart';
 import 'package:todo_app/screens/intro/welcome_screen.dart';
 import 'package:todo_app/screens/login%20&%20register/login_screen.dart';
 import 'package:todo_app/screens/login%20&%20register/register_screen.dart';
+import 'package:todo_app/screens/settings_screen.dart';
 import 'package:todo_app/screens/user/user_profile_screen.dart';
 
 import 'package:todo_app/widgets/bottom_navigation_bar.dart';
@@ -63,4 +64,9 @@ void openCheckSignIn(BuildContext context) async {
 void openVerification(BuildContext context) async {
   Navigator.push(context,
       MaterialPageRoute(builder: (context) => const VerificationEmailScreen()));
+}
+
+void openSettings(BuildContext context) async {
+  Navigator.push(context,
+      MaterialPageRoute(builder: (context) => SettingsScreen()));
 }

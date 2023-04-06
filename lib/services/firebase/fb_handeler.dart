@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-
 import 'package:todo_app/models/category_model.dart';
 import 'package:todo_app/models/task_model.dart';
 import 'package:todo_app/models/user_model.dart';
