@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app/utils/constraints.dart';
+import 'package:todo_app/utils/navigation.dart';
 import 'package:todo_app/view%20models/user%20view%20model/userViewModel.dart';
 
 import 'package:todo_app/widgets/setting_list_tile.dart';
@@ -62,7 +63,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   SettingListTile(
                       text: "App Settings",
                       icon: Icons.settings_outlined,
-                      function: () {}),
+                      function: () {
+                        openSettings(context);
+                      }),
                   SizedBox(
                     height: 30,
                   ),

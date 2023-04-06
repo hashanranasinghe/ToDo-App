@@ -5,9 +5,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_app/utils/constraints.dart';
 import 'package:todo_app/widgets/text_field.dart';
 
+
 class FocusScreen extends StatefulWidget {
   const FocusScreen({super.key});
-
   @override
   _FocusScreenState createState() => _FocusScreenState();
 }
@@ -19,21 +19,24 @@ class _FocusScreenState extends State<FocusScreen> {
   int _secondsRemaining = 0;
   bool _isPaused = true;
   Timer? _timer;
+  DateTime date= DateTime.now();
   TextEditingController hourController = TextEditingController();
   TextEditingController minController = TextEditingController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   void _startTimer() {
     setState(() {
       _totalSeconds = _hours + _min;
+      date = date.add(Duration(seconds: _totalSeconds));
       _isPaused = false;
       _secondsRemaining = _totalSeconds;
-      _saveTotalSeconds();
     });
 
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
         if (_secondsRemaining > 0) {
           _secondsRemaining--;
+          _saveTotalSeconds(_secondsRemaining);
         } else {
           _isPaused = true;
           timer.cancel();
@@ -49,35 +52,50 @@ class _FocusScreenState extends State<FocusScreen> {
     });
   }
 
-  void _resetTimer() {
+  void _resetTimer() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _isPaused = true;
       _timer?.cancel();
       _totalSeconds = 0;
       _secondsRemaining = 0;
     });
+    prefs.clear();
   }
+
   @override
   void initState() {
     super.initState();
     _loadTotalSeconds();
+    _startTimer();
   }
 
   void _loadTotalSeconds() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _secondsRemaining = prefs.getInt('totalSeconds') ?? 0;
-    });
+    if (prefs.get('remainingSeconds').toString() != "null") {
+      String? dateTimeString = prefs.getString('finishTime');
+      setState(() {
+        date =DateTime.parse(dateTimeString!);
+        _secondsRemaining = date.difference(DateTime.now()).inSeconds;
+        _totalSeconds = int.parse(prefs.get('totalSeconds').toString());
+      });
+      int time = int.parse(prefs.get('remainingSeconds').toString());
+      print(time);
+    }
   }
-  void _saveTotalSeconds() async {
+
+  void _saveTotalSeconds(secondsRemaining) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setInt('totalSeconds', _secondsRemaining);
+    prefs.setInt('remainingSeconds', secondsRemaining);
+    prefs.setInt("totalSeconds", _totalSeconds);
+    prefs.setString('finishTime', date.toIso8601String());
   }
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
+      key: _scaffoldKey,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text("Focus Screen"),
@@ -146,7 +164,6 @@ class _FocusScreenState extends State<FocusScreen> {
                   onPressed: _resetTimer,
                   child: Text("Reset"),
                 ),
-
               ],
             ),
             SizedBox(height: 50),
@@ -155,5 +172,4 @@ class _FocusScreenState extends State<FocusScreen> {
       ),
     );
   }
-
 }
