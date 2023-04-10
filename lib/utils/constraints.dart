@@ -102,12 +102,13 @@ class Convert {
 
   static String convertTimeOfDayToString({required TimeOfDay time}) {
     int h = time.hour;
-    int m= time.minute;
+    int m = time.minute;
     TimeOfDay timeOfDay = TimeOfDay(hour: h, minute: m);
-    String formattedTime = DateFormat('hh:mm a').format(DateTime(2022, 1, 1, timeOfDay.hour, timeOfDay.minute));
+    String formattedTime = DateFormat('hh:mm a')
+        .format(DateTime(2022, 1, 1, timeOfDay.hour, timeOfDay.minute));
     return formattedTime;
-
   }
+
   static String getDate({required DateTime date}) {
     date = DateTime(date.year, date.month, date.day);
     DateTime now = DateTime.now();
@@ -125,9 +126,31 @@ class Convert {
     }
   }
 
-
-  static String upperCase({required String text}){
-    String capitalizedText = text.substring(0, 1).toUpperCase() + text.substring(1);
+  static String upperCase({required String text}) {
+    String capitalizedText =
+        text.substring(0, 1).toUpperCase() + text.substring(1);
     return capitalizedText;
+  }
+
+  static String timeFormat(double time) {
+    int totalMinutes = time.round();
+    int hours = totalMinutes ~/ 60;
+    int minutes = totalMinutes % 60;
+    String formattedTime =
+        '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}';
+    return formattedTime;
+  }
+
+  static String nameFormat(String name) {
+    if (name.contains("com.google.android.apps.")) {
+      return upperCase(text: name.replaceAll("com.google.android.", ""));
+    } else if (name.contains("com.android.")) {
+      return upperCase(text: name.replaceAll("com.android.", ""));
+    } else if (name.contains("com.example.")) {
+      return upperCase(text: name.replaceAll("com.example.", ""));
+    } else if (name.contains("com.google.android.")) {
+      return upperCase(text: name.replaceAll("com.google.android.", ""));
+    }
+    return upperCase(text: name);
   }
 }
