@@ -84,7 +84,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   SettingListTile(
                       text: "About us",
                       icon: CupertinoIcons.book_circle_fill,
-                      function: () {}),
+                      function: () {
+                        openUsage(context);
+                      }),
                   SizedBox(
                     height: 10,
                   ),
