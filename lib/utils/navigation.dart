@@ -8,10 +8,9 @@ import 'package:todo_app/screens/focus/focus_screen.dart';
 import 'package:todo_app/screens/intro/welcome_screen.dart';
 import 'package:todo_app/screens/login%20&%20register/login_screen.dart';
 import 'package:todo_app/screens/login%20&%20register/register_screen.dart';
-import 'package:todo_app/screens/settings_screen.dart';
-import 'package:todo_app/screens/usage_screen.dart';
+import 'package:todo_app/screens/usage/settings_screen.dart';
+import 'package:todo_app/screens/usage/usage_screen.dart';
 import 'package:todo_app/screens/user/user_profile_screen.dart';
-
 import 'package:todo_app/widgets/bottom_navigation_bar.dart';
 
 void openHome(BuildContext context) async {
@@ -74,5 +73,9 @@ void openSettings(BuildContext context) async {
 
 void openUsage(BuildContext context) async {
   Navigator.push(context,
-      MaterialPageRoute(builder: (context) => UsageScreen()));
+      MaterialPageRoute(builder: (context) => const UsageScreen(myApps: true,)));
+}
+void openUsageStat(BuildContext context) async {
+  Navigator.push(context,
+      MaterialPageRoute(builder: (context) => const UsageScreen(myApps: false,)));
 }

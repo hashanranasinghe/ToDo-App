@@ -49,6 +49,7 @@ dependencies:
   usage_stats: ^1.2.0
   flutter_launcher_icons: ^0.13.0
   package_info_plus: ^3.0.3
+  fl_chart: ^0.61.0
 
 
 dev_dependencies:

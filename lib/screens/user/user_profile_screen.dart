@@ -56,6 +56,25 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   SizedBox(
                     height: 30,
                   ),
+                  Text("Usage"),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  SettingListTile(
+                      text: "My Apps",
+                      icon: Icons.apps,
+                      function: () {
+                       openUsage(context);
+                      }),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  SettingListTile(
+                      text: "Usage Statistics",
+                      icon: Icons.graphic_eq_rounded,
+                      function: () {
+                        openUsageStat(context);
+                      }),
                   Text("Settings"),
                   SizedBox(
                     height: 10,
@@ -85,7 +104,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       text: "About us",
                       icon: CupertinoIcons.book_circle_fill,
                       function: () {
-                        openUsage(context);
+
                       }),
                   SizedBox(
                     height: 10,

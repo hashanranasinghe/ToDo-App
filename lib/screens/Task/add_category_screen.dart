@@ -130,7 +130,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                     child: ListView.builder(
                       shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
-                      itemCount: colors.length,
+                      itemCount: 20,
                       itemBuilder: (context, index) {
                         return GestureDetector(
                           onTap: () {
