@@ -56,7 +56,7 @@ const List<IconData> icons = [
   Icons.color_lens,
 ];
 
-List<Color> colors = List.generate(20, (index) {
+List<Color> colors = List.generate(1000, (index) {
   return Color.fromARGB(
     255,
     Random().nextInt(200) + 55,
@@ -132,8 +132,9 @@ class Convert {
     return capitalizedText;
   }
 
-  static String timeFormat(double time) {
-    int totalMinutes = time.round();
+  static String timeFormat(String foregroundTime) {
+    var foregroundUsageInMinutes = double.parse(foregroundTime) / 1000 / 60;
+    int totalMinutes = foregroundUsageInMinutes.round();
     int hours = totalMinutes ~/ 60;
     int minutes = totalMinutes % 60;
     String formattedTime =
@@ -153,4 +154,5 @@ class Convert {
     }
     return upperCase(text: name);
   }
+
 }
