@@ -5,6 +5,7 @@ class TaskRow extends StatelessWidget {
   final IconData? btnIcon;
   final IconData topicIcon;
   final String topic;
+  final Color color;
   final Function function;
   const TaskRow(
       {Key? key,
@@ -12,7 +13,8 @@ class TaskRow extends StatelessWidget {
       this.btnIcon,
       required this.topicIcon,
       required this.topic,
-      required this.function})
+      required this.function,
+      this.color = Colors.white})
       : super(key: key);
 
   @override
@@ -21,14 +23,16 @@ class TaskRow extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Row(
-          children: [Icon(topicIcon),
+          children: [
+            Icon(topicIcon),
             SizedBox(
               width: 10,
             ),
-            Text("$topic:")],
+            Text("$topic:")
+          ],
         ),
         InkWell(
-          onTap: (){
+          onTap: () {
             function();
           },
           child: Container(
@@ -36,7 +40,8 @@ class TaskRow extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                   color: Colors.white.withOpacity(0.21)),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                 child: Row(
                   children: [
                     if (btnIcon != null) ...[
@@ -47,7 +52,7 @@ class TaskRow extends StatelessWidget {
                     ],
                     Text(
                       text,
-                      style: TextStyle(fontSize: 15),
+                      style: TextStyle(fontSize: 15,color: color),
                     ),
                   ],
                 ),

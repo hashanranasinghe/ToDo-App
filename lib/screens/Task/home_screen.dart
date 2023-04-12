@@ -1,10 +1,10 @@
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app/models/task_model.dart';
 import 'package:todo_app/services/firebase/fb_handeler.dart';
+import 'package:todo_app/utils/constraints.dart';
 import 'package:todo_app/utils/navigation.dart';
 
 import 'package:todo_app/view%20models/task%20view%20models/task_list_view_model.dart';
@@ -20,12 +20,21 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late List<TaskListViewModel> filteredTasks;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    Provider.of<TaskListViewModel>(context, listen: false)
-        .getAllTasks(userId: widget.userId);
+      Provider.of<TaskListViewModel>(context, listen: false)
+          .getAllTasks(userId: widget.userId);
+
+      searchController.addListener(() {
+        setState(() {
+          Provider.of<TaskListViewModel>(context, listen: false).getSearchTasks(
+              userId: widget.userId, query: searchController.text);
+        });
+      });
+
   }
 
   TextEditingController searchController = TextEditingController();
@@ -45,31 +54,25 @@ class _HomeScreenState extends State<HomeScreen> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Column(
-            children: [
-              TextFieldWidget(
-                  label: "Search Your Task",
-                  prefixIcon: Icon(
-                    CupertinoIcons.search,
-                    color: Colors.white,
-                  ),
-                  onchange: (value) {},
-                  valid: (value) {},
-                  save: (value) {},
-                  controller: searchController),
-              SizedBox(
-                height: 20,
-              ),
-              Container(
-                height:
-                    screenHeight * 0.6, // Set a fixed height for the container
-                child: _updateUi(vm),
-              ),
-            ],
-          ),
+      body: Padding(
+        padding: const EdgeInsets.only(left: 20, right: 20),
+        child: Column(
+          children: [
+            TextFieldWidget(
+                label: "Search Your Task",
+                prefixIcon: Icon(
+                  CupertinoIcons.search,
+                  color: Colors.white,
+                ),
+                onchange: (value) {},
+                valid: (value) {},
+                save: (value) {},
+                controller: searchController),
+            Expanded(child: _updateUi(vm)),
+            SizedBox(
+              height: screenHeight * 0.1,
+            )
+          ],
         ),
       ),
     );
@@ -80,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case Status.loading:
         return Align(
           alignment: Alignment.center,
-          child: CircularProgressIndicator(),
+          child: Lottie.asset(loadingAnim, width: 200, height: 200),
         );
       case Status.success:
         return TodoListCard(
@@ -93,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case Status.empty:
         return Align(
           alignment: Alignment.center,
-          child: Text("No forum found...."),
+          child: Lottie.asset(todoAnim, width: 300, height: 300),
         );
     }
   }

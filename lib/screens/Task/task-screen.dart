@@ -33,8 +33,7 @@ class _TaskScreenState extends State<TaskScreen> {
   TextEditingController descriptionController = TextEditingController();
   late DateTime _selectedDate;
   late TimeOfDay _timeOfDay;
-
-
+  bool isDone = false;
   @override
   void initState() {
     super.initState();
@@ -52,6 +51,7 @@ class _TaskScreenState extends State<TaskScreen> {
     addTaskViewModel.category = widget.taskModel.category;
     addTaskViewModel.title = widget.taskModel.title;
     addTaskViewModel.description = widget.taskModel.description;
+    addTaskViewModel.isDone =widget.taskModel.isDone;
     taskListViewModel = Provider.of<TaskListViewModel>(context, listen: false);
     Provider.of<CategoryListViewModel>(context, listen: false)
         .getCategories(userId: user!.uid);
@@ -62,6 +62,7 @@ class _TaskScreenState extends State<TaskScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final task = widget.taskModel;
     final vm = Provider.of<CategoryListViewModel>(context);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -84,8 +85,7 @@ class _TaskScreenState extends State<TaskScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                Convert.upperCase(
-                                    text: addTaskViewModel.title),
+                                Convert.upperCase(text: addTaskViewModel.title),
                                 style: TextStyle(
                                     fontWeight: FontWeight.w500, fontSize: 20),
                               ),
@@ -93,7 +93,8 @@ class _TaskScreenState extends State<TaskScreen> {
                                 height: 10,
                               ),
                               Text(
-                              Convert.upperCase(text: addTaskViewModel.description),
+                                Convert.upperCase(
+                                    text: addTaskViewModel.description),
                                 style: TextStyle(
                                     color: kPrimaryTextColor, fontSize: 15),
                               )
@@ -115,7 +116,8 @@ class _TaskScreenState extends State<TaskScreen> {
                                         onSave: (newTitle, newDescription) {
                                           setState(() {
                                             addTaskViewModel.title = newTitle;
-                                            addTaskViewModel.description = newDescription;
+                                            addTaskViewModel.description =
+                                                newDescription;
                                           });
                                         },
                                       );
@@ -196,6 +198,29 @@ class _TaskScreenState extends State<TaskScreen> {
                   SizedBox(
                     height: 30,
                   ),
+                  TaskRow(
+                      function: () {
+                        setState(() {
+                          if (addTaskViewModel.isDone == false) {
+                            isDone=true;
+                            addTaskViewModel.isDone = true;
+                          } else {
+                            isDone = false;
+                            addTaskViewModel.isDone = false;
+                          }
+                        });
+                      },
+                      text: addTaskViewModel.isDone == false
+                          ? "Not Complete"
+                          : "Completed",
+                      topicIcon: Icons.done_outline_outlined,
+                      color: addTaskViewModel.isDone == false
+                          ? Colors.white
+                          : Colors.green,
+                      topic: "Task Priority"),
+                  SizedBox(
+                    height: 30,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -256,6 +281,8 @@ class _TaskScreenState extends State<TaskScreen> {
                   ButtonField(
                     onpress: () async {
                       setState(() {
+                        print(isDone);
+                        addTaskViewModel.isDone = isDone;
                         addTaskViewModel.id = task.id;
                         addTaskViewModel.date = _selectedDate;
                         addTaskViewModel.time =

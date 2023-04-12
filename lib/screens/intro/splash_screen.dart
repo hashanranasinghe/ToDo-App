@@ -3,6 +3,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:todo_app/utils/navigation.dart';
 
 import '../../utils/constraints.dart';
@@ -29,7 +30,7 @@ class StartState extends State<SplashScreen> {
   }
 
   startTimer() async {
-    var duration = Duration(seconds: 3);
+    var duration = Duration(seconds:3);
 
     return new Timer(duration, route);
   }
@@ -55,8 +56,13 @@ class StartState extends State<SplashScreen> {
                       top: size.width * 0.1,
                       left: size.width * 0.1,
                       right: size.width * 0.1),
-                  child: Image.asset(logo)),
-              CircularProgressIndicator(color: Colors.white),
+                  child: Image.asset(logo,scale: 7,)),
+              Text("My ToDo",style: TextStyle(
+                  fontSize: 50,
+                  fontWeight: FontWeight.bold
+              ),),
+              Lottie.asset(loadingAnim,width: 50,height: 50),
+
               SizedBox(
                 height: size.height * 0.22,
               ),

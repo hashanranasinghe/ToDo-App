@@ -4,22 +4,34 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app/utils/constraints.dart';
 import 'package:todo_app/utils/navigation.dart';
+import 'package:todo_app/view%20models/task%20view%20models/task_list_view_model.dart';
 import 'package:todo_app/view%20models/user%20view%20model/userViewModel.dart';
-
 import 'package:todo_app/widgets/setting_list_tile.dart';
 import 'package:todo_app/widgets/task_count_card.dart';
 
 class UserProfileScreen extends StatefulWidget {
-  const UserProfileScreen({Key? key}) : super(key: key);
+  final String userId;
+  const UserProfileScreen({Key? key, required this.userId}) : super(key: key);
 
   @override
   State<UserProfileScreen> createState() => _UserProfileScreenState();
 }
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Provider.of<TaskListViewModel>(context, listen: false)
+        .getAllTasks(userId: widget.userId);
+  }
+
   final user = FirebaseAuth.instance.currentUser;
   @override
   Widget build(BuildContext context) {
+    final vm = Provider.of<TaskListViewModel>(context);
+    final length = vm.tasks.length;
+    vm.tasks.removeWhere((element) => element.isDone == true);
     return Consumer<UserViewModel>(builder: (context, userViewModel, child) {
       if (userViewModel.userModel == null) {
         userViewModel.getCurrentUser(id: user!.uid);
@@ -28,7 +40,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         return Scaffold(
             body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.only(top: 5,left: 15,right: 15),
+            padding: const EdgeInsets.only(top: 5, left: 15, right: 15),
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,8 +61,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      TaskCountCard(text: "10 task left"),
-                      TaskCountCard(text: "5 task done")
+                      TaskCountCard(text: "${vm.tasks.length} task left"),
+                      TaskCountCard(
+                          text: "${length - vm.tasks.length} task done")
                     ],
                   ),
                   SizedBox(
@@ -64,7 +77,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       text: "My Apps",
                       icon: Icons.apps,
                       function: () {
-                       openUsage(context);
+                        openUsage(context);
                       }),
                   SizedBox(
                     height: 10,
@@ -103,16 +116,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   SettingListTile(
                       text: "About us",
                       icon: CupertinoIcons.book_circle_fill,
-                      function: () {
-
-                      }),
+                      function: () {}),
                   SizedBox(
                     height: 10,
                   ),
                   SettingListTile(
-                      text: "FAQ",
-                      icon: Icons.info_outline,
-                      function: () {}),
+                      text: "FAQ", icon: Icons.info_outline, function: () {}),
                   SizedBox(
                     height: 10,
                   ),
@@ -139,8 +148,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       ),
                       Text(
                         "Log Out",
-                        style: TextStyle(
-                            fontSize: 18, color: kPrimaryErrorColor),
+                        style:
+                            TextStyle(fontSize: 18, color: kPrimaryErrorColor),
                       )
                     ],
                   ),

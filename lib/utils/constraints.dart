@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 const logo = "assets/images/logo.png";
+const loadingAnim = "assets/json/loading.json";
+const todoAnim = "assets/json/todo.json";
 
 //don't change black its effect to the calendar
 ThemeData darkTheme = ThemeData.dark().copyWith(
@@ -115,13 +117,13 @@ class Convert {
     DateTime today = DateTime(now.year, now.month, now.day);
 
     if (date.isAtSameMomentAs(today)) {
-      return "Today At ";
+      return "Today ";
     } else if (date.isAtSameMomentAs(today.add(Duration(days: 1)))) {
-      return "Tomorrow At ";
+      return "Tomorrow ";
     } else if (date.isAtSameMomentAs(today.subtract(Duration(days: 1)))) {
-      return "Yesterday At ";
+      return "Yesterday ";
     } else {
-      String day = "${DateFormat('yyyy MMMM d').format(date)} At ";
+      String day = "${DateFormat('yyyy MMMM d').format(date)} ";
       return day;
     }
   }

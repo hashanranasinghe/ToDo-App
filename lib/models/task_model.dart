@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:todo_app/models/category_model.dart';
 
@@ -27,6 +26,7 @@ class TaskModel {
       title: map['title'],
       description: map['description'],
       priority: map['priority'],
+      isDone: map['isDone'],
       date: (map['date'] as Timestamp).toDate(),
       time: map['time'],
       category: CategoryModel.fromMap(map['category']));
@@ -37,6 +37,7 @@ class TaskModel {
         'priority': priority,
         'date': date,
         'time': time,
+        'isDone': isDone,
         'category': category.toMap()
       };
 }
