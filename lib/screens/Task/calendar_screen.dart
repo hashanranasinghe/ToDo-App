@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_calendar/flutter_clean_calendar.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app/models/task_model.dart';
 import 'package:todo_app/services/firebase/fb_handeler.dart';
+import 'package:todo_app/utils/constraints.dart';
 import 'package:todo_app/utils/navigation.dart';
 import 'package:todo_app/view%20models/task%20view%20models/task_list_view_model.dart';
 import 'package:todo_app/view%20models/task%20view%20models/task_view_model.dart';
@@ -32,12 +34,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<TaskListViewModel>(context);
+    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
           SizedBox(
-            height: 600,
+            height: screenHeight,
             child: ListView.builder(
                 itemCount: 1,
                 itemBuilder: (context, index) {
@@ -52,16 +55,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
                           endTime: task.date, startTime: task.date));
                     }
                   }
-
-                  print(vm.tasks);
-                  print(eventsMap);
                   return SafeArea(
                     child: Calendar(
                       startOnMonday: true,
                       weekDays: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'],
                       events: eventsMap,
                       eventListBuilder: (context, index) {
-                        return _updateUi(vm);
+                        return _updateUi(vm, screenHeight);
                       },
                       onRangeSelected: (range) =>
                           print('Range is ${range.from}, ${range.to}'),
@@ -87,26 +87,29 @@ class _CalendarScreenState extends State<CalendarScreen> {
     );
   }
 
-  Widget _updateUi(TaskListViewModel vm) {
+  Widget _updateUi(TaskListViewModel vm, double screenHeight) {
     switch (vm.status) {
       case Status.loading:
         return Align(
           alignment: Alignment.center,
-          child: CircularProgressIndicator(),
+          child: Lottie.asset(loadingAnim, width: 200, height: 200),
         );
       case Status.success:
-        return TodoListCard(
-            selectedDay: _selectedDay,
-            function: (taskId) async {
-              final TaskModel taskModel = await FbHandler.getTask(
-                  userId: widget.userId, taskId: taskId);
-              openTask(context, taskModel);
-            },
-            tasks: vm.tasks);
+        return SizedBox(
+          height: screenHeight * 0.35,
+          child: TodoListCard(
+              selectedDay: _selectedDay,
+              function: (taskId) async {
+                final TaskModel taskModel = await FbHandler.getTask(
+                    userId: widget.userId, taskId: taskId);
+                openTask(context, taskModel);
+              },
+              tasks: vm.tasks),
+        );
       case Status.empty:
         return Align(
           alignment: Alignment.center,
-          child: Text("No forum found...."),
+          child: Lottie.asset(todoAnim, width: 200, height: 200),
         );
     }
   }

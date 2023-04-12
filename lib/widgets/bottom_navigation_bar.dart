@@ -53,7 +53,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       ),
       HomeScreen(userId: widget.userId.toString()),
       FocusScreen(),
-      UserProfileScreen(),
+      UserProfileScreen(userId: widget.userId.toString()),
     ]);
   }
 
@@ -288,6 +288,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         addTaskViewModel.description = descriptionController.text;
         addTaskViewModel.date = _selectedDate;
         addTaskViewModel.time = "${_timeOfDay.hour}:${_timeOfDay.minute}";
+        addTaskViewModel.isDone = false;
       });
       await addTaskViewModel.addTodo(userId: user!.uid);
       await taskListViewModel.getAllTasks(userId: user!.uid).whenComplete(() =>

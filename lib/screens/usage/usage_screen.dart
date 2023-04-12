@@ -3,7 +3,8 @@ import 'package:installed_apps/app_info.dart';
 import 'package:installed_apps/installed_apps.dart';
 import 'package:todo_app/models/app_usage_model.dart';
 import 'package:todo_app/screens/usage/usage_stat_screen.dart';
-
+import 'package:lottie/lottie.dart';
+import 'package:todo_app/utils/constraints.dart';
 import 'package:todo_app/widgets/app_card_list.dart';
 import 'dart:async';
 import 'package:usage_stats/usage_stats.dart';
@@ -123,7 +124,7 @@ class _UsageScreenState extends State<UsageScreen> {
                         itemCount: newList.length,
                       ),
                     ))
-                : const Center(child: CircularProgressIndicator()))
+                : Center(child: Lottie.asset(loadingAnim,width: 200,height: 200)))
         : UsageStatScreen(newList: newList,);
   }
 }

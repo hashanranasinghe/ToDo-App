@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:todo_app/models/app_usage_model.dart';
 import 'package:todo_app/utils/constraints.dart';
 import 'package:todo_app/widgets/piechart_details.dart';
@@ -18,6 +19,7 @@ class _UsageStatScreenState extends State<UsageStatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     if (widget.newList.isNotEmpty) {
       setState(() {
         isLoad = true;
@@ -38,10 +40,11 @@ class _UsageStatScreenState extends State<UsageStatScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SizedBox(
-                    height: 100,
+                    height: size.height * 0.1,
                   ),
                   SizedBox(
-                    height: 200,
+                    height: size.height * 0.2,
+                    width: size.width * 0.3,
                     child: PieChart(PieChartData(
                       pieTouchData: PieTouchData(touchCallback:
                           (FlTouchEvent event, pieTouchResponse) {
@@ -61,11 +64,14 @@ class _UsageStatScreenState extends State<UsageStatScreen> {
                       ),
                       sectionsSpace: 0,
                       centerSpaceRadius: 0,
-                      sections: showingSections(),
+                      sections: showingSections(size),
                     )),
                   ),
                   SizedBox(
-                    height: 400,
+                    height: size.height * 0.1,
+                  ),
+                  SizedBox(
+                    height: size.height * 0.4,
                     child: ListView.builder(
                         shrinkWrap: true,
                         itemCount: widget.newList.length,
@@ -80,10 +86,11 @@ class _UsageStatScreenState extends State<UsageStatScreen> {
                   )
                 ],
               )
-            : const Center(child: CircularProgressIndicator()));
+            : Center(
+                child: Lottie.asset(loadingAnim, width: 200, height: 200)));
   }
 
-  List<PieChartSectionData> showingSections() {
+  List<PieChartSectionData> showingSections(Size size) {
     double totalForegroundTime = widget.newList.fold(
         0, (total, element) => total + double.parse(element.foregroundTime));
     widget.newList.removeWhere((element) =>
@@ -93,7 +100,7 @@ class _UsageStatScreenState extends State<UsageStatScreen> {
     return List.generate(widget.newList.length, (i) {
       final isTouched = i == touchedIndex;
       final fontSize = isTouched ? 20.0 : 16.0;
-      final radius = isTouched ? 210.0 : 200.0;
+      final radius = isTouched ? 170.0 : 150.0;
       final widgetSize = isTouched ? 55.0 : 40.0;
       const shadows = [Shadow(color: Colors.black, blurRadius: 2)];
       final foregroundTime = double.parse(widget.newList[i].foregroundTime);

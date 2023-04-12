@@ -10,55 +10,60 @@ import 'package:todo_app/screens/login%20&%20register/login_screen.dart';
 import 'package:todo_app/screens/login%20&%20register/register_screen.dart';
 import 'package:todo_app/screens/usage/settings_screen.dart';
 import 'package:todo_app/screens/usage/usage_screen.dart';
-import 'package:todo_app/screens/user/user_profile_screen.dart';
 import 'package:todo_app/widgets/bottom_navigation_bar.dart';
 
 void openHome(BuildContext context) async {
-  Navigator.push(context,
-      MaterialPageRoute(builder: (context) => const WelcomeScreen()));
+  Navigator.push(
+      context, MaterialPageRoute(builder: (context) => const WelcomeScreen()));
 }
 
 void openAddCategory(BuildContext context) async {
-  Navigator.push(context,
-      MaterialPageRoute(fullscreenDialog: true   ,builder: (context) => AddCategoryScreen()));
+  Navigator.push(
+      context,
+      MaterialPageRoute(
+          fullscreenDialog: true, builder: (context) => AddCategoryScreen()));
 }
 
 void openLogin(BuildContext context) async {
-  Navigator.push(context,
-      MaterialPageRoute(builder: (context) => LoginScreen()));
+  Navigator.push(
+      context, MaterialPageRoute(builder: (context) => LoginScreen()));
 }
 
 void openRegister(BuildContext context) async {
-  Navigator.push(context,
-      MaterialPageRoute(builder: (context) => RegisterScreen()));
-}
-void openTodoList(BuildContext context) async {
-  Navigator.push(context,
-      MaterialPageRoute(builder: (context) => BottomNavBar()));
-}
-void openTodoListAfterDelete(BuildContext context,String userId) async {
-  Navigator.push(context,
-      MaterialPageRoute(builder: (context) => BottomNavBar(userId: userId,)));
+  Navigator.push(
+      context, MaterialPageRoute(builder: (context) => RegisterScreen()));
 }
 
-void openTask(BuildContext context,TaskModel taskModel) async {
-  Navigator.push(context,
-      MaterialPageRoute(fullscreenDialog:true,builder: (context) => TaskScreen(taskModel: taskModel)));
+void openTodoList(BuildContext context) async {
+  Navigator.push(
+      context, MaterialPageRoute(builder: (context) => BottomNavBar()));
+}
+
+void openTodoListAfterDelete(BuildContext context, String userId) async {
+  Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => BottomNavBar(
+                userId: userId,
+              )));
+}
+
+void openTask(BuildContext context, TaskModel taskModel) async {
+  Navigator.push(
+      context,
+      MaterialPageRoute(
+          fullscreenDialog: true,
+          builder: (context) => TaskScreen(taskModel: taskModel)));
 }
 
 void openFocus(BuildContext context) async {
-  Navigator.push(context,
-      MaterialPageRoute(builder: (context) => FocusScreen()));
-}
-
-void openProfile(BuildContext context) async {
-  Navigator.push(context,
-      MaterialPageRoute(builder: (context) => UserProfileScreen()));
+  Navigator.push(
+      context, MaterialPageRoute(builder: (context) => FocusScreen()));
 }
 
 void openCheckSignIn(BuildContext context) async {
-  Navigator.push(context,
-      MaterialPageRoute(builder: (context) => const CheckSignIn()));
+  Navigator.push(
+      context, MaterialPageRoute(builder: (context) => const CheckSignIn()));
 }
 
 void openVerification(BuildContext context) async {
@@ -67,15 +72,24 @@ void openVerification(BuildContext context) async {
 }
 
 void openSettings(BuildContext context) async {
-  Navigator.push(context,
-      MaterialPageRoute(builder: (context) => SettingsScreen()));
+  Navigator.push(
+      context, MaterialPageRoute(builder: (context) => SettingsScreen()));
 }
 
 void openUsage(BuildContext context) async {
-  Navigator.push(context,
-      MaterialPageRoute(builder: (context) => const UsageScreen(myApps: true,)));
+  Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => const UsageScreen(
+                myApps: true,
+              )));
 }
+
 void openUsageStat(BuildContext context) async {
-  Navigator.push(context,
-      MaterialPageRoute(builder: (context) => const UsageScreen(myApps: false,)));
+  Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => const UsageScreen(
+                myApps: false,
+              )));
 }

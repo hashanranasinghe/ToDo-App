@@ -37,6 +37,7 @@ class AddTaskViewModel extends ChangeNotifier {
         priority: priority,
         date: date,
         time: time,
+        isDone: isDone,
         category: category);
     await FbHandler.updateDoc(
         taskModel.toMap(), ["user", "task"], [userId, taskModel.id.toString()]);
