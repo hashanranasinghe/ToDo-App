@@ -5,7 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_app/utils/constraints.dart';
 import 'package:todo_app/widgets/text_field.dart';
 
-
 class FocusScreen extends StatefulWidget {
   const FocusScreen({super.key});
   @override
@@ -18,18 +17,30 @@ class _FocusScreenState extends State<FocusScreen> {
   int _totalSeconds = 0;
   int _secondsRemaining = 0;
   bool _isPaused = true;
+  bool _isStopped = false;
   Timer? _timer;
-  DateTime date= DateTime.now();
+  DateTime date = DateTime.now();
   TextEditingController hourController = TextEditingController();
   TextEditingController minController = TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  void _startTimer() {
+  _startTimer() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _totalSeconds = _hours + _min;
-      date = date.add(Duration(seconds: _totalSeconds));
-      _isPaused = false;
-      _secondsRemaining = _totalSeconds;
+      if (_secondsRemaining == 0) {
+        _totalSeconds = _hours + _min;
+        date = date.add(Duration(seconds: _totalSeconds));
+        _isPaused = false;
+        print(date);
+        _secondsRemaining = _totalSeconds;
+      } else {
+        _isStopped = false;
+        prefs.setBool("_isStopped", _isStopped);
+        date = DateTime.now().add(Duration(seconds: _secondsRemaining));
+        prefs.setString('finishTime', date.toIso8601String());
+        print(date);
+        _isPaused = false;
+      }
     });
 
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
@@ -45,9 +56,14 @@ class _FocusScreenState extends State<FocusScreen> {
     });
   }
 
-  void _pauseTimer() {
+  void _pauseTimer() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
     setState(() {
       _isPaused = true;
+      _isStopped = true;
+      prefs.setBool("_isStopped", _isStopped);
+      prefs.setInt('remainingSeconds', _secondsRemaining);
       _timer?.cancel();
     });
   }
@@ -66,26 +82,47 @@ class _FocusScreenState extends State<FocusScreen> {
   @override
   void initState() {
     super.initState();
-    _loadTotalSeconds();
-    _startTimer();
+    _loadTotalSeconds().then((value) {
+      if (value == false) {
+        _startTimer();
+      }
+    });
   }
 
-  void _loadTotalSeconds() async {
+  Future<bool> _loadTotalSeconds() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.get('remainingSeconds').toString() != "null") {
       String? dateTimeString = prefs.getString('finishTime');
       setState(() {
-        date =DateTime.parse(dateTimeString!);
-        _secondsRemaining = date.difference(DateTime.now()).inSeconds;
+        _isStopped = prefs.getBool("_isStopped")!;
+        date = DateTime.parse(dateTimeString!);
+        if (_isStopped == false) {
+          _secondsRemaining = date
+              .difference(DateTime.now())
+              .inSeconds; //date.difference(DateTime.now()).inSeconds
+        } else {
+          _secondsRemaining =
+              int.parse(prefs.get('remainingSeconds').toString());
+        }
+
         _totalSeconds = int.parse(prefs.get('totalSeconds').toString());
       });
+      print(_isStopped);
       int time = int.parse(prefs.get('remainingSeconds').toString());
       print(time);
     }
+    return _isStopped;
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   void _saveTotalSeconds(secondsRemaining) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool("_isStopped", _isStopped);
     prefs.setInt('remainingSeconds', secondsRemaining);
     prefs.setInt("totalSeconds", _totalSeconds);
     prefs.setString('finishTime', date.toIso8601String());
@@ -103,7 +140,6 @@ class _FocusScreenState extends State<FocusScreen> {
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -152,18 +188,32 @@ class _FocusScreenState extends State<FocusScreen> {
               ),
               progressColor: kPrimaryButtonColor,
             ),
-            SizedBox(height: 50),
+            SizedBox(
+              height: 20,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ElevatedButton(
-                  onPressed: _isPaused ? _startTimer : _pauseTimer,
-                  child: Text(_isPaused ? "Start" : "Pause"),
-                ),
-                ElevatedButton(
-                  onPressed: _resetTimer,
-                  child: Text("Reset"),
-                ),
+                IconButton(
+                    onPressed: _isPaused ? _startTimer : _pauseTimer,
+                    icon: _isPaused
+                        ? const Icon(
+                            Icons.play_circle_fill_rounded,
+                            color: kPrimaryButtonColor,
+                            size: 80,
+                          )
+                        : const Icon(
+                            Icons.pause_circle_outline_rounded,
+                            color: kPrimaryButtonColor,
+                            size: 80,
+                          )),
+                IconButton(
+                    onPressed: _resetTimer,
+                    icon: Icon(
+                      Icons.motion_photos_pause,
+                      color: kPrimaryButtonColor,
+                      size: 80,
+                    )),
               ],
             ),
             SizedBox(height: 50),
