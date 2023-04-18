@@ -1,11 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_app/models/user_model.dart';
+import 'package:todo_app/services/auth/signin_mannager.dart';
+import 'package:todo_app/services/firebase/fb_handeler.dart';
 import 'package:todo_app/utils/constraints.dart';
 import 'package:todo_app/utils/navigation.dart';
 import 'package:todo_app/view%20models/task%20view%20models/task_list_view_model.dart';
 import 'package:todo_app/view%20models/user%20view%20model/userViewModel.dart';
+import 'package:todo_app/widgets/change_acc_name.dart';
+import 'package:todo_app/widgets/popup_dialog.dart';
 import 'package:todo_app/widgets/setting_list_tile.dart';
 import 'package:todo_app/widgets/task_count_card.dart';
 
@@ -18,17 +24,21 @@ class UserProfileScreen extends StatefulWidget {
 }
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
+  final user = FirebaseAuth.instance.currentUser;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
     Provider.of<TaskListViewModel>(context, listen: false)
         .getAllTasks(userId: widget.userId);
   }
 
-  final user = FirebaseAuth.instance.currentUser;
+
+  TextEditingController nameController= TextEditingController();
   @override
   Widget build(BuildContext context) {
+
     final vm = Provider.of<TaskListViewModel>(context);
     final length = vm.tasks.length;
     vm.tasks.removeWhere((element) => element.isDone == true);
@@ -37,6 +47,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         userViewModel.getCurrentUser(id: user!.uid);
         return const Center(child: CircularProgressIndicator());
       } else {
+        nameController.text = userViewModel.userModel!.name.toString();
         return Scaffold(
             body: SafeArea(
           child: Padding(
@@ -95,9 +106,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   SettingListTile(
                       text: "App Settings",
                       icon: Icons.settings_outlined,
-                      function: () {
-                        openSettings(context);
-                      }),
+                      function: () {}),
                   SizedBox(
                     height: 30,
                   ),
@@ -108,7 +117,21 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   SettingListTile(
                       text: "Change Account Name",
                       icon: CupertinoIcons.profile_circled,
-                      function: () {}),
+                      function: () {
+                        showDialog(context: context, builder: (context){
+                          return ChangeAccountName(nameController: nameController, onUpdate: (String name)async {
+                            final UserModel userModel = UserModel(name: name, email: user!.email.toString());
+                           int res = await FbHandler.updateUserDoc(userModel.toMap(), user!.uid);
+                            userViewModel.getCurrentUser(id: user!.uid);
+                           if(res == resOk){
+                             Fluttertoast.showToast(msg: 'Name is updated successfully');
+                           }else{
+                             Fluttertoast.showToast(msg: 'Something went to wrong');
+                           }
+                          },);
+                        });
+
+                      }),
                   Text("ToDo us"),
                   SizedBox(
                     height: 10,
@@ -136,22 +159,30 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       text: "Support US",
                       icon: Icons.thumb_up_alt_outlined,
                       function: () {}),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.logout_outlined,
-                        color: kPrimaryErrorColor,
-                        size: 30,
-                      ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Text(
-                        "Log Out",
-                        style:
-                            TextStyle(fontSize: 18, color: kPrimaryErrorColor),
-                      )
-                    ],
+                  GestureDetector(
+                    onTap: () {
+                      PopupDialog.showPopupLogout(
+                          context, "Do you want top log out?", "", () {
+                        SignInManager().signOut();
+                      });
+                    },
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.logout_outlined,
+                          color: kPrimaryErrorColor,
+                          size: 30,
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          "Log Out",
+                          style: TextStyle(
+                              fontSize: 18, color: kPrimaryErrorColor),
+                        )
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: 100,

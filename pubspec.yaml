@@ -51,6 +51,7 @@ dependencies:
   package_info_plus: ^3.0.3
   fl_chart: ^0.61.0
   lottie: ^2.3.2
+  awesome_dialog: ^3.0.2
 
 
 dev_dependencies:
@@ -68,6 +69,11 @@ dev_dependencies:
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/logo.png"
 flutter:
 
   # The following line ensures that the Material Icons font is

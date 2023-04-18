@@ -3,7 +3,14 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+//images
 const logo = "assets/images/logo.png";
+const play = "assets/images/play.png";
+const pause = "assets/images/pause.png";
+const reset ="assets/images/reset.png";
+
+
+//animation
 const loadingAnim = "assets/json/loading.json";
 const todoAnim = "assets/json/todo.json";
 

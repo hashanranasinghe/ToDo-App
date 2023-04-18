@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/models/task_model.dart';
 import 'package:todo_app/screens/Task/add_category_screen.dart';
+import 'package:todo_app/screens/Task/filter_screen.dart';
 import 'package:todo_app/screens/Task/task-screen.dart';
 import 'package:todo_app/screens/auth/check_signIn.dart';
 import 'package:todo_app/screens/auth/verificationscreen.dart';
@@ -75,7 +76,10 @@ void openSettings(BuildContext context) async {
   Navigator.push(
       context, MaterialPageRoute(builder: (context) => SettingsScreen()));
 }
-
+void openFilters(BuildContext context) async {
+  Navigator.push(
+      context, MaterialPageRoute(builder: (context) => FilterScreen(),fullscreenDialog: true));
+}
 void openUsage(BuildContext context) async {
   Navigator.push(
       context,
