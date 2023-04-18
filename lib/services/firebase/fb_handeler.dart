@@ -92,6 +92,26 @@ class FbHandler {
     return res;
   }
 
+  //update user doc
+  static Future<int> updateUserDoc(
+      Map<String, dynamic> model, String docId) async {
+    int res = resFail;
+    try {
+      await firestoreInstance
+          .collection("user")
+          .doc(docId)
+          .update(model)
+          .then((_) {
+        print("update user doc");
+        res = resOk;
+      });
+    } on Exception catch (e) {
+      print(e);
+      res = resFail;
+    }
+    return res;
+  }
+
   //delete doc
   static Future<int> deleteDoc(
       {required List<String> collection, required List<String> docId}) async {

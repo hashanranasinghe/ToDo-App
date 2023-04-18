@@ -42,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final vm = Provider.of<TaskListViewModel>(context);
     final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -58,16 +59,35 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.only(left: 20, right: 20),
         child: Column(
           children: [
-            TextFieldWidget(
-                label: "Search Your Task",
-                prefixIcon: Icon(
-                  CupertinoIcons.search,
-                  color: Colors.white,
+            Row(
+              children: [
+                SizedBox(
+                  width: screenWidth*0.75,
+                  child: TextFieldWidget(
+                      label: "Search Your Task",
+                      prefixIcon: Icon(
+                        CupertinoIcons.search,
+                        color: Colors.white,
+                      ),
+                      onchange: (value) {},
+                      valid: (value) {},
+                      save: (value) {},
+                      controller: searchController),
                 ),
-                onchange: (value) {},
-                valid: (value) {},
-                save: (value) {},
-                controller: searchController),
+                SizedBox(
+                  width: 5,
+                ),
+                GestureDetector(
+                  onTap: (){
+                    openFilters(context);
+                  },
+                  child: Icon(
+                    Icons.filter_alt_outlined,
+                    size: 35,
+                  ),
+                )
+              ],
+            ),
             Expanded(child: _updateUi(vm)),
             SizedBox(
               height: screenHeight * 0.1,

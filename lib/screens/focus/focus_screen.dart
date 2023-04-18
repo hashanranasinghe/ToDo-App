@@ -54,6 +54,12 @@ class _FocusScreenState extends State<FocusScreen> {
         }
       });
     });
+
+    if(hourController.text !="" || minController.text !=""){
+      hourController.clear();
+      minController.clear();
+
+    }
   }
 
   void _pauseTimer() async {
@@ -135,6 +141,7 @@ class _FocusScreenState extends State<FocusScreen> {
       key: _scaffoldKey,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        centerTitle: true,
         title: Text("Focus Screen"),
       ),
       body: SingleChildScrollView(
@@ -194,26 +201,14 @@ class _FocusScreenState extends State<FocusScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                IconButton(
-                    onPressed: _isPaused ? _startTimer : _pauseTimer,
-                    icon: _isPaused
-                        ? const Icon(
-                            Icons.play_circle_fill_rounded,
-                            color: kPrimaryButtonColor,
-                            size: 80,
-                          )
-                        : const Icon(
-                            Icons.pause_circle_outline_rounded,
-                            color: kPrimaryButtonColor,
-                            size: 80,
-                          )),
-                IconButton(
-                    onPressed: _resetTimer,
-                    icon: Icon(
-                      Icons.motion_photos_pause,
-                      color: kPrimaryButtonColor,
-                      size: 80,
-                    )),
+                GestureDetector(
+                  onTap: _isPaused ? _startTimer : _pauseTimer,
+                  child: _isPaused ? Image.asset(play,scale: 1.5,):Image.asset(pause,scale: 1.5)
+                ),
+                GestureDetector(
+                  onTap: _resetTimer,
+                  child: Image.asset(reset,scale: 1.5),
+                )
               ],
             ),
             SizedBox(height: 50),
