@@ -47,11 +47,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
     taskListViewModel = Provider.of<TaskListViewModel>(context, listen: false);
     _populateCategories();
     _screens.addAll([
-      HomeScreen(userId: widget.userId.toString()),
+      HomeScreen(),
       CalendarScreen(
         userId: user!.uid,
       ),
-      HomeScreen(userId: widget.userId.toString()),
+      HomeScreen(),
       FocusScreen(),
       UserProfileScreen(userId: widget.userId.toString()),
     ]);
@@ -283,13 +283,13 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
   _addTodo() async {
     if (_form.currentState!.validate()) {
-      setState(() {
-        addTaskViewModel.title = titleController.text;
-        addTaskViewModel.description = descriptionController.text;
-        addTaskViewModel.date = _selectedDate;
-        addTaskViewModel.time = "${_timeOfDay.hour}:${_timeOfDay.minute}";
-        addTaskViewModel.isDone = false;
-      });
+      addTaskViewModel.title = titleController.text;
+      addTaskViewModel.description = descriptionController.text;
+      addTaskViewModel.date = _selectedDate;
+
+      addTaskViewModel.time = "${_timeOfDay.hour}:${_timeOfDay.minute}";
+      addTaskViewModel.isDone = false;
+
       await addTaskViewModel.addTodo(userId: user!.uid);
       await taskListViewModel.getAllTasks(userId: user!.uid).whenComplete(() =>
           Fluttertoast.showToast(msg: 'Task added Successfully')

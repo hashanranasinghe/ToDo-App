@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_app/utils/constraints.dart';
 import 'package:todo_app/widgets/button_field.dart';
 
 class TaskPriorityWidget extends StatefulWidget {
   final Function(int) function;
   final int? selectIndex;
-  const TaskPriorityWidget({Key? key, required this.function, this.selectIndex}) : super(key: key);
+  final bool filter;
+  const TaskPriorityWidget(
+      {Key? key, required this.function, this.selectIndex, this.filter = false})
+      : super(key: key);
 
   @override
   State<TaskPriorityWidget> createState() => _TaskPriorityWidgetState();
@@ -16,7 +20,9 @@ class _TaskPriorityWidgetState extends State<TaskPriorityWidget> {
   @override
   void initState() {
     super.initState();
-    widget.selectIndex == null?selectIndex = -1:selectIndex =widget.selectIndex!-1;
+    widget.selectIndex == null
+        ? selectIndex = -1
+        : selectIndex = widget.selectIndex! - 1;
   }
 
   @override
@@ -45,10 +51,22 @@ class _TaskPriorityWidgetState extends State<TaskPriorityWidget> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Text(
-              "Task Priority",
-              style: TextStyle(fontSize: 20),
+            padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+            child: Row(
+              mainAxisAlignment: (widget.filter ==true)?MainAxisAlignment.spaceBetween:MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Task Priority",
+                  style: TextStyle(fontSize: 20),
+                ),
+                if(widget.filter ==true)...[
+                  IconButton(onPressed: ()async{
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    await prefs.remove("priority");
+                    Navigator.pop(context);
+                  }, icon: Icon(Icons.delete_outline_rounded))
+                ]
+              ],
             ),
           ),
           Padding(

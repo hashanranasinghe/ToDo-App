@@ -157,6 +157,7 @@ class _TaskScreenState extends State<TaskScreen> {
                             context: context,
                             builder: (BuildContext context) {
                               return ChooseCategoryWidget(
+                                categoryName: addTaskViewModel.category.category,
                                   categoryListViewModel: vm,
                                   function: (categoryModel) {
                                     setState(() {

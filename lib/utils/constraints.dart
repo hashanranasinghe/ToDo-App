@@ -8,6 +8,7 @@ const logo = "assets/images/logo.png";
 const play = "assets/images/play.png";
 const pause = "assets/images/pause.png";
 const reset ="assets/images/reset.png";
+const filter = "assets/images/filter.png";
 
 
 //animation
