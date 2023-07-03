@@ -25,7 +25,8 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
     super.initState();
     addCategoryViewModel =
         Provider.of<AddCategoryViewModel>(context, listen: false);
-    categoryListViewModel= Provider.of<CategoryListViewModel>(context,listen: false);
+    categoryListViewModel =
+        Provider.of<CategoryListViewModel>(context, listen: false);
   }
 
   IconData? icon;
@@ -36,6 +37,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   final FocusNode _focusNode = FocusNode();
   @override
   Widget build(BuildContext context) {
+    final vm = Provider.of<CategoryListViewModel>(context);
     return Scaffold(
       body: Padding(
         padding:
@@ -208,7 +210,8 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                     ),
                     ButtonField(
                       onpress: () async {
-                        _addCategory();
+                        _addCategory(
+                            categoriesLength: vm.categories.length.toInt());
                       },
                       text: "Create Category",
                       fontsize: 15,
@@ -276,14 +279,15 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
     });
   }
 
-  _addCategory() async {
+  _addCategory({required int categoriesLength}) async {
+    addCategoryViewModel.id = (categoriesLength + 1).toString();
     addCategoryViewModel.category = categoryController.text;
     addCategoryViewModel.color = Convert.getColorString(color: selectedColor!);
     addCategoryViewModel.icon = icon!.codePoint.toString();
 
     await addCategoryViewModel.addCategory(userId: user!.uid);
-    await categoryListViewModel.getCategories(userId: user!.uid).whenComplete(() =>
-        Fluttertoast.showToast(msg: 'Category added Successfully')
+    await categoryListViewModel.getCategories(userId: user!.uid).whenComplete(
+        () => Fluttertoast.showToast(msg: 'Category added Successfully')
             .whenComplete(() => Navigator.pop(context)));
   }
 }

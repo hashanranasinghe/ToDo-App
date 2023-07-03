@@ -8,22 +8,42 @@ enum Status { loading, empty, success }
 class TaskListViewModel extends ChangeNotifier {
   List<TaskViewModel> tasks = <TaskViewModel>[];
   Status status = Status.empty;
-  bool _isAllToDos =false;
+  bool _isAllToDos = false;
+  String _filterCategory = "";
+  int _filterPriority = 0;
   Future<void> getAllTasks({required String userId}) async {
     status = Status.loading;
 
-
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if(prefs.getBool("_isAllToDos") != null){
+    final results = await FbHandler.getAllTasks(id: userId);
+    tasks = results.map((task) => TaskViewModel(taskModel: task)).toList();
+
+    if (prefs.getBool("_isAllToDos") != null) {
       _isAllToDos = prefs.getBool("_isAllToDos")!;
     }
-    if(_isAllToDos==false){
-      final results = await FbHandler.getAllTasks(id: userId);
-      tasks = results.map((task) => TaskViewModel(taskModel: task)).toList();
+    if (prefs.getString("category") != null) {
+      _filterCategory = prefs.getString("category")!;
+    } else {
+      _filterCategory = "";
+    }
+    if (prefs.getInt("priority") != null) {
+      _filterPriority = prefs.getInt("priority")!;
+    } else {
+      _filterPriority = 0;
+    }
+
+    if (_isAllToDos == false) {
       tasks = tasks.where((task) => task.isDone == false).toList();
-    }else{
-      final results = await FbHandler.getAllTasks(id: userId);
-      tasks = results.map((task) => TaskViewModel(taskModel: task)).toList();
+    }
+    if (_filterCategory != "") {
+      tasks = tasks
+          .where((task) =>
+              task.category.category.toLowerCase() ==
+              _filterCategory.toLowerCase())
+          .toList();
+    }
+    if (_filterPriority != 0) {
+      tasks = tasks.where((task) => task.priority == _filterPriority).toList();
     }
 
     status = tasks.isEmpty ? Status.empty : Status.success;

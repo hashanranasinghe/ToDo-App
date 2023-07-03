@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -6,41 +7,46 @@ import 'package:todo_app/models/task_model.dart';
 import 'package:todo_app/services/firebase/fb_handeler.dart';
 import 'package:todo_app/utils/constraints.dart';
 import 'package:todo_app/utils/navigation.dart';
+import 'package:todo_app/view%20models/filter%20view%20model/filter_view_model.dart';
+
 
 import 'package:todo_app/view%20models/task%20view%20models/task_list_view_model.dart';
 import 'package:todo_app/widgets/text_field.dart';
 import 'package:todo_app/widgets/todo_list_card.dart';
 
 class HomeScreen extends StatefulWidget {
-  final String userId;
-  const HomeScreen({Key? key, required this.userId}) : super(key: key);
+
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final user = FirebaseAuth.instance.currentUser;
   late List<TaskListViewModel> filteredTasks;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-      Provider.of<TaskListViewModel>(context, listen: false)
-          .getAllTasks(userId: widget.userId);
 
-      searchController.addListener(() {
-        setState(() {
-          Provider.of<TaskListViewModel>(context, listen: false).getSearchTasks(
-              userId: widget.userId, query: searchController.text);
-        });
+    Provider.of<TaskListViewModel>(context, listen: false)
+        .getAllTasks(userId: user!.uid);
+    Provider.of<FilterListViewModel>(context, listen: false)
+        .getCurrentFilters();
+    searchController.addListener(() {
+      setState(() {
+        Provider.of<TaskListViewModel>(context, listen: false).getSearchTasks(
+            userId: user!.uid, query: searchController.text);
       });
-
+    });
   }
 
   TextEditingController searchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<TaskListViewModel>(context);
+    final fm = Provider.of<FilterListViewModel>(context);
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -62,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Row(
               children: [
                 SizedBox(
-                  width: screenWidth*0.75,
+                  width: screenWidth * 0.75,
                   child: TextFieldWidget(
                       label: "Search Your Task",
                       prefixIcon: Icon(
@@ -77,15 +83,36 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(
                   width: 5,
                 ),
-                GestureDetector(
-                  onTap: (){
-                    openFilters(context);
-                  },
-                  child: Icon(
-                    Icons.filter_alt_outlined,
-                    size: 35,
+                SizedBox(
+                  width: 50.0,
+                  height: 50.0,
+                  child: Stack(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          openFilters(context);
+                        },
+                        child: CircleAvatar(
+                          backgroundImage: AssetImage(filter),
+                          backgroundColor: Colors.transparent,
+                          radius: 30.0,
+                        ),
+                      ),
+                      Positioned(
+                        top: 0.0,
+                        right: 0.0,
+                        child: CircleAvatar(
+                            backgroundColor: kPrimaryButtonColor,
+                            radius: 10.0,
+                            child: Text(
+                              fm.count.toString(),
+                              style:
+                                  TextStyle(fontSize: 12, color: Colors.white),
+                            )),
+                      ),
+                    ],
                   ),
-                )
+                ),
               ],
             ),
             Expanded(child: _updateUi(vm)),
@@ -108,8 +135,10 @@ class _HomeScreenState extends State<HomeScreen> {
       case Status.success:
         return TodoListCard(
             function: (taskId) async {
+              print(taskId);
+              print(user?.uid);
               final TaskModel taskModel = await FbHandler.getTask(
-                  userId: widget.userId, taskId: taskId);
+                  userId: user!.uid, taskId: taskId);
               openTask(context, taskModel);
             },
             tasks: vm.tasks);
